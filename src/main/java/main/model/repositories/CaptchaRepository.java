@@ -7,14 +7,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Repository
 public interface CaptchaRepository extends JpaRepository<CaptchaCode, Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "DELETE FROM captcha_codes c " +
-            "WHERE DATE_ADD(c.time, INTERVAL ?1 MINUTE) < CURDATE()", nativeQuery = true)
-    void deleteOldCaptchas(int captchaLiveTimeInMins);
+    @Query(value = "DELETE FROM captcha_codes " +
+            "WHERE time < ?", nativeQuery = true)
+    void deleteOldCaptchas(LocalDateTime captchaDeletedBeforeTime);
 
     @Query(value = "SELECT * FROM captcha_codes c" +
             " WHERE c.secret_code = ?", nativeQuery = true)

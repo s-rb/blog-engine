@@ -59,7 +59,8 @@ public class CaptchaRepositoryServiceImpl implements CaptchaRepositoryService {
     @Override
     public ResponseEntity<ResponseApi> generateCaptcha() {
         log.info("--- Удаление устаревших капч (время устаревания " + oldCaptchaDeleteTimeInMin + " мин)");
-        captchaRepository.deleteOldCaptchas(oldCaptchaDeleteTimeInMin);
+        LocalDateTime captchaDeleteBeforeTime = LocalDateTime.now().minusMinutes((long) oldCaptchaDeleteTimeInMin);
+        captchaRepository.deleteOldCaptchas(captchaDeleteBeforeTime);
         log.info("--- Устаревшие капчи удалены");
 
         String secretCode = generateRandomString();
