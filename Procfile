@@ -1,1 +1,1 @@
-web: java -jar target/blog-engine-1.0.jar
+web: java -jar target/surkov-java-blog-engine-1.0.jar
