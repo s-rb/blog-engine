@@ -1,7 +1,8 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false
+    #url: jdbc:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false
+    url: jdbc:${CLEARDB_DATABASE_URL:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false}
     useJDBCCompliantTimeZoneShift: true
     serverTimezone: Asia/Tokyo
     username: root
@@ -34,6 +35,8 @@ spring:
           starttls:
             enable: true
         debug: true
+server:
+  port: ${PORT:8080}
 captcha:
   delete_timeout: 60 # min
   random_secret_key_length: 22
