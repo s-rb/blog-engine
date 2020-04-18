@@ -15,7 +15,7 @@ spring:
       hibernate:
         jdbc:
           time_zone: Asia/Tokyo
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQL5Dialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   servlet:
     multipart:
