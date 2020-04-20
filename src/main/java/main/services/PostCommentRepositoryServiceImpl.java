@@ -2,13 +2,18 @@ package main.services;
 
 import lombok.extern.slf4j.Slf4j;
 import main.api.request.AddCommentRequest;
-import main.api.response.*;
+import main.api.response.AddCommentResponse;
+import main.api.response.BadRequestMessageResponse;
+import main.api.response.ResponseApi;
 import main.model.entities.GlobalSettings;
 import main.model.entities.Post;
 import main.model.entities.PostComment;
 import main.model.entities.User;
 import main.model.repositories.PostCommentRepository;
-import main.services.interfaces.*;
+import main.services.interfaces.GlobalSettingsRepositoryService;
+import main.services.interfaces.PostCommentRepositoryService;
+import main.services.interfaces.PostRepositoryService;
+import main.services.interfaces.UserRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -35,8 +40,6 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
     @Autowired
     private PostRepositoryService postRepositoryService;
     @Autowired
-    private HtmlParseService htmlParserService;
-    @Autowired
     private GlobalSettingsRepositoryService globalSettingsRepositoryService;
 
     @Override
@@ -46,7 +49,7 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
         if (parentId == null && postId == null) {
             log.warn("--- Не заданы родительского поста/комментария");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Не заданы родительский пост и комментарий"),
+                    new BadRequestMessageResponse("Не заданы родительский пост и комментарий"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -56,7 +59,7 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
                     + " символов) или превышает максимальный размер (" + maxCommentLength + " символов)";
             log.warn("--- " + message);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse(message), HttpStatus.BAD_REQUEST);
+                    new BadRequestMessageResponse(message), HttpStatus.BAD_REQUEST);
         }
         PostComment parentComment = null;
         Post parentPost = null;
@@ -70,7 +73,7 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
             log.warn("--- Не удалось найти пост/комментарий с указанными id: [" +
                     "postId:" + postId + "," + "parentCommentID:" + postId + "]");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Не найдены родительский пост и комментарий"),
+                    new BadRequestMessageResponse("Не найдены родительский пост и комментарий"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -78,12 +81,12 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
         if (!user.isModerator() && !isMultiuserMode())
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Для добавления комментария требуется включить " +
+                    new BadRequestMessageResponse("Для добавления комментария требуется включить " +
                             "многопользовательский режим и/или требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
 
@@ -104,7 +107,8 @@ public class PostCommentRepositoryServiceImpl implements PostCommentRepositorySe
 
     private boolean isTextValid(String text) {
         if (text == null || text.equals("")) return false;
-        String cleanText = htmlParserService.getTextStringFromHtml(text);
+        String cleanText = HtmlParserServiceImpl.getTextStringFromHtml(text);
+        assert cleanText != null;
         return cleanText.length() <= maxCommentLength && cleanText.length() >= minCommentLength;
     }
 

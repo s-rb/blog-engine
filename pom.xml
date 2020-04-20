@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>skillbox-java-course</groupId>
-    <artifactId>surkov-java-blog-engine</artifactId>
+    <artifactId>blog-engine</artifactId>
     <version>1.0</version>
 
     <properties>

@@ -1,17 +1,15 @@
 package main.services;
 
 import lombok.extern.slf4j.Slf4j;
-import main.services.interfaces.HtmlParseService;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class HtmlParserServiceImpl implements HtmlParseService {
+public class HtmlParserServiceImpl {
 
-    @Override
-    public String getTextStringFromHtml(String htmlStringToParse) {
+    public static String getTextStringFromHtml(String htmlStringToParse) {
         if (htmlStringToParse == null || htmlStringToParse.isBlank()) {
             log.info("--- Для парсинга передана пустая HTML строка : {" + htmlStringToParse + "}");
             return null;

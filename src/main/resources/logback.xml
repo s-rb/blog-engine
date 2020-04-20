@@ -6,7 +6,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${HOME-DIR}/archived/app.%d{yyyy-MM-dd}.%i.info.log.gz</fileNamePattern>
             <maxFileSize>10MB</maxFileSize>
-            <totalSizeCap>150MB</totalSizeCap>
+            <totalSizeCap>100MB</totalSizeCap>
             <maxHistory>60</maxHistory>
         </rollingPolicy>
         <encoder>

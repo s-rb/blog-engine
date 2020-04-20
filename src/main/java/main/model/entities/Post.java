@@ -22,7 +22,7 @@ public class Post implements Serializable {
 
     @Column(name = "moderation_status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private ModerationStatus moderationStatus = ModerationStatus.NEW; // По умолчанию NEW
+    private ModerationStatus moderationStatus; // По умолчанию NEW
 
     @Column(name = "moderator_id", nullable = true)
     private Integer moderatorId = null;
@@ -43,13 +43,13 @@ public class Post implements Serializable {
     @Column(name = "view_count", nullable = false)
     private int viewCount;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PostVote> postVotes = new HashSet<PostVote>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PostComment> postComments = new HashSet<PostComment>();
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<TagToPost> tagsToPostsSet = new HashSet<TagToPost>();
 
     public Post() {

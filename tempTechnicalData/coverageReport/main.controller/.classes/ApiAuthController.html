@@ -1,0 +1,167 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ApiAuthController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.controller</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ApiAuthController (main.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ApiAuthController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (25/ 25)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.controller;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import lombok.extern.slf4j.Slf4j;
+<i>4</i>&nbsp;import main.api.request.ChangePasswordRequest;
+<i>5</i>&nbsp;import main.api.request.LoginRequest;
+<i>6</i>&nbsp;import main.api.request.RegisterRequest;
+<i>7</i>&nbsp;import main.api.request.RestorePassRequest;
+<i>8</i>&nbsp;import main.api.response.ResponseApi;
+<i>9</i>&nbsp;import main.services.interfaces.CaptchaRepositoryService;
+<i>10</i>&nbsp;import main.services.interfaces.UserRepositoryService;
+<i>11</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>12</i>&nbsp;import org.springframework.context.annotation.ComponentScan;
+<i>13</i>&nbsp;import org.springframework.http.ResponseEntity;
+<i>14</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;import javax.servlet.http.HttpServletRequest;
+<i>17</i>&nbsp;
+<b class="fc"><i>18</i>&nbsp;@Slf4j</b>
+<i>19</i>&nbsp;@RestController
+<i>20</i>&nbsp;@ComponentScan(&quot;service&quot;)
+<i>21</i>&nbsp;@RequestMapping(value = &quot;/api/auth/&quot;)
+<i>22</i>&nbsp;public class ApiAuthController {
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    @Autowired
+<i>25</i>&nbsp;    private UserRepositoryService userRepoService;
+<i>26</i>&nbsp;    @Autowired
+<i>27</i>&nbsp;    private CaptchaRepositoryService captchaRepoService;
+<i>28</i>&nbsp;
+<b class="fc"><i>29</i>&nbsp;    public ApiAuthController() {</b>
+<b class="fc"><i>30</i>&nbsp;    }</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    @GetMapping(value = &quot;logout&quot;)
+<i>33</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; logout(HttpServletRequest request) {
+<b class="fc"><i>34</i>&nbsp;        log.info(&quot;--- Получен GET запрос на /api/auth/logout : ID сессии&quot; + request.getSession().getId());</b>
+<b class="fc"><i>35</i>&nbsp;        return userRepoService.logout(request.getSession());</b>
+<i>36</i>&nbsp;    }
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;    @PostMapping(value = &quot;register&quot;)
+<i>39</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; register(@RequestBody RegisterRequest registerRequest) {
+<b class="fc"><i>40</i>&nbsp;        log.info(&quot;--- Получен POST запрос на /api/auth/register со следующими параметрам: {&quot; +</b>
+<b class="fc"><i>41</i>&nbsp;                &quot;Email: &quot; + registerRequest.getEmail() + &quot;, &quot; +</b>
+<b class="fc"><i>42</i>&nbsp;                &quot;Captcha: &quot; + registerRequest.getCaptcha() + &quot;, &quot; +</b>
+<b class="fc"><i>43</i>&nbsp;                &quot;CaptchaSecret: &quot; + registerRequest.getCaptchaSecret() + &quot;, &quot; +</b>
+<i>44</i>&nbsp;                &quot;}&quot;);
+<b class="fc"><i>45</i>&nbsp;        return userRepoService.register(registerRequest);</b>
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;    @PostMapping(value = &quot;login&quot;)
+<i>49</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+<b class="fc"><i>50</i>&nbsp;        log.info(&quot;--- Получен POST запрос на /api/auth/login со следующими параметрами: {&quot; +</b>
+<b class="fc"><i>51</i>&nbsp;                &quot;Email: &quot; + loginRequest.getEmail() + &quot;, &quot; +</b>
+<i>52</i>&nbsp;                &quot;}&quot;);
+<b class="fc"><i>53</i>&nbsp;        return userRepoService.login(loginRequest, request.getSession());</b>
+<i>54</i>&nbsp;    }
+<i>55</i>&nbsp;
+<i>56</i>&nbsp;    @GetMapping(value = &quot;check&quot;)
+<i>57</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; checkAuth(HttpServletRequest request) {
+<b class="fc"><i>58</i>&nbsp;        log.info(&quot;--- Получен GET запрос на /api/auth/login : ID сессии&quot; + request.getSession().getId());</b>
+<b class="fc"><i>59</i>&nbsp;        return userRepoService.checkAuth(request.getSession());</b>
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    @PostMapping(value = &quot;restore&quot;)
+<i>63</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; restorePassword(@RequestBody RestorePassRequest restorePassRequest) {
+<b class="fc"><i>64</i>&nbsp;        log.info(&quot;--- Получен POST запрос на /api/auth/restore со следующими параметрами: {&quot; +</b>
+<b class="fc"><i>65</i>&nbsp;                &quot;Email:&quot; + restorePassRequest.getEmail() + &quot;}&quot;);</b>
+<b class="fc"><i>66</i>&nbsp;        return userRepoService.restorePassword(restorePassRequest);</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    @PostMapping(value = &quot;password&quot;)
+<i>70</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+<b class="fc"><i>71</i>&nbsp;        log.info(&quot;--- Получен POST запрос на /api/auth/password со следующими параметрами: {&quot; +</b>
+<b class="fc"><i>72</i>&nbsp;                &quot;Code:&quot; + changePasswordRequest.getCode() + &quot;,&quot; +</b>
+<b class="fc"><i>73</i>&nbsp;                &quot;Captcha:&quot; + changePasswordRequest.getCaptcha() + &quot;,&quot; +</b>
+<b class="fc"><i>74</i>&nbsp;                &quot;CaptchaSecret:&quot; + changePasswordRequest.getCaptchaSecret()</b>
+<i>75</i>&nbsp;                + &quot;}&quot;);
+<b class="fc"><i>76</i>&nbsp;        return userRepoService.changePassword(changePasswordRequest);</b>
+<i>77</i>&nbsp;    }
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    @GetMapping(value = &quot;captcha&quot;)
+<i>80</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; generateCaptcha() {
+<b class="fc"><i>81</i>&nbsp;        log.info(&quot;--- Получен GET запрос на /api/auth/captcha&quot;);</b>
+<b class="fc"><i>82</i>&nbsp;        return captchaRepoService.generateCaptcha();</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

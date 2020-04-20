@@ -1,0 +1,157 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CaptchaCode</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.model.entities</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CaptchaCode (main.model.entities)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CaptchaCode</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (5/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52,6%
+  </span>
+  <span class="absValue">
+    (10/ 19)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CaptchaCode$HibernateProxy$GaBBNhZi</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (5/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    52,6%
+  </span>
+  <span class="absValue">
+    (10/ 19)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.model.entities;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import javax.persistence.*;
+<i>4</i>&nbsp;import java.io.Serializable;
+<i>5</i>&nbsp;import java.time.LocalDateTime;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;@Entity
+<i>8</i>&nbsp;@Table(name = &quot;captcha_codes&quot;)
+<i>9</i>&nbsp;public class CaptchaCode implements Serializable {
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    @Id
+<i>12</i>&nbsp;    @GeneratedValue(strategy = GenerationType.AUTO)
+<i>13</i>&nbsp;    private int id;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    @Column(nullable = false, columnDefinition = &quot;DATETIME&quot;)
+<i>16</i>&nbsp;    private LocalDateTime time;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    @Column(nullable = false, columnDefinition = &quot;TINYTEXT&quot;)
+<i>19</i>&nbsp;    private String code;
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    @Column(name = &quot;secret_code&quot;, nullable = false, columnDefinition = &quot;TINYTEXT&quot;)
+<i>22</i>&nbsp;    private String secretCode;
+<i>23</i>&nbsp;
+<b class="fc"><i>24</i>&nbsp;    public CaptchaCode(LocalDateTime time, String code, String secretCode) {</b>
+<b class="fc"><i>25</i>&nbsp;        this.time = time;</b>
+<b class="fc"><i>26</i>&nbsp;        this.code = code;</b>
+<b class="fc"><i>27</i>&nbsp;        this.secretCode = secretCode;</b>
+<b class="fc"><i>28</i>&nbsp;    }</b>
+<i>29</i>&nbsp;
+<b class="fc"><i>30</i>&nbsp;    public CaptchaCode() {</b>
+<b class="fc"><i>31</i>&nbsp;    }</b>
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;    public int getId() {
+<b class="fc"><i>34</i>&nbsp;        return id;</b>
+<i>35</i>&nbsp;    }
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    public void setId(int id) {
+<b class="nc"><i>38</i>&nbsp;        this.id = id;</b>
+<b class="nc"><i>39</i>&nbsp;    }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    public LocalDateTime getTime() {
+<b class="nc"><i>42</i>&nbsp;        return time;</b>
+<i>43</i>&nbsp;    }
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;    public void setTime(LocalDateTime time) {
+<b class="nc"><i>46</i>&nbsp;        this.time = time;</b>
+<b class="nc"><i>47</i>&nbsp;    }</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    public String getCode() {
+<b class="fc"><i>50</i>&nbsp;        return code;</b>
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;    public void setCode(String code) {
+<b class="nc"><i>54</i>&nbsp;        this.code = code;</b>
+<b class="nc"><i>55</i>&nbsp;    }</b>
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public String getSecretCode() {
+<b class="fc"><i>58</i>&nbsp;        return secretCode;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    public void setSecretCode(String secretCode) {
+<b class="nc"><i>62</i>&nbsp;        this.secretCode = secretCode;</b>
+<b class="nc"><i>63</i>&nbsp;    }</b>
+<i>64</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

@@ -1,7 +1,6 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    #url: jdbc:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false
     url: jdbc:${CLEARDB_DATABASE_URL:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false}
     useJDBCCompliantTimeZoneShift: true
     serverTimezone: Asia/Tokyo
@@ -15,17 +14,17 @@ spring:
       hibernate:
         jdbc:
           time_zone: Asia/Tokyo
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   servlet:
     multipart:
-      max-file-size: 5MB
-      max-request-size: 5MB
+      max-file-size: 10MB
+      max-request-size: 10MB
   mail:
     host: smtp.gmail.com
     port: 587
-    username: surkov.r.b
-    password: #somepassword (application password generated for your google account)
+    username: #gmail login
+    password:  #somepassword (application password generated for your google account)
     properties:
       mail:
         transport:
@@ -72,7 +71,7 @@ user:
   timeout_edit_profile: 3600000 # ms
   password:
     restore_key_length: 45
-    restore_pass_message_string: "/login/change-password/"    # + передается код для восстановления
+    restore_pass_message_string: "/login/change-password/"    # + код для восстановления
     restore_message_subject: "Ссылка для восстановление пароля"
     validation_regex: "^.{6,}$"
     hashing_algorithm: MD5

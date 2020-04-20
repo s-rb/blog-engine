@@ -3,6 +3,7 @@ package main.api.response;
 import main.model.entities.Post;
 import main.model.entities.PostComment;
 import main.model.entities.TagToPost;
+import main.services.HtmlParserServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +32,8 @@ public class GetPostResponse implements ResponseApi {
         user = new PostAuthor(post.getUser().getId(), post.getUser().getName());
         title = post.getTitle();
         text = post.getText();
-        String temp = post.getText().replaceAll("<.+?>", "");
+        String temp = HtmlParserServiceImpl.getTextStringFromHtml(post.getText());
+        assert temp != null;
         announce = temp.length() < announceLength ? temp
                 : temp.substring(0, announceLength) + "...";
         likeCount = (int) post.getPostVotes().stream().filter(l -> l.getValue() == 1).count();

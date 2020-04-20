@@ -10,7 +10,5 @@ public interface TagRepositoryService {
 
     Tag addTag(Tag tag);
 
-    void deleteTag(Tag tag);
-
     ResponseEntity<ResponseApi> getTagsWithoutQuery();
 }

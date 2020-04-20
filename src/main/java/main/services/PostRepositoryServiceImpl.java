@@ -71,15 +71,13 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
     @Autowired
     private FileSystemService fileSystemService;
     @Autowired
-    private HtmlParseService htmlParserService;
-    @Autowired
     private GlobalSettingsRepositoryService globalSettingsRepositoryService;
 
-    public ResponseEntity<ResponseApi> getPostForUnlogginedUser(Post post) {
+    public ResponseEntity<ResponseApi> getPostForUnloginnedUser(Post post) {
         if (!post.isActive() || !post.getModerationStatus().equals(ModerationStatus.ACCEPTED)
                 || !post.getTime().isBefore(LocalDateTime.now())) {
             log.warn("--- Данные поста не соответствуют настройкам отображения: " + post.toString());
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     !post.isActive() ? "Публикация скрыта" : "",
                     !post.getModerationStatus().equals(ModerationStatus.ACCEPTED) ? "Требуется модерация" : "",
                     !post.getTime().isBefore(LocalDateTime.now())
@@ -101,17 +99,22 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (post == null) {
             log.warn("--- Не удалось найти пост с id:" + id);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пост не найден"),
+                    new BadRequestMessageResponse("Пост не найден"),
                     HttpStatus.BAD_REQUEST);
         }
         User user = userRepositoryService.getUserBySession(session);
         if (user == null || (post.getUser() != user && !user.isModerator()))
-            return getPostForUnlogginedUser(post);
+            return getPostForUnloginnedUser(post);
         // Если автор или модератор, то просматривает в любом случае, однако просмотры не увеличиваются
         ResponseApi responseApi = new GetPostResponse(post, announceLength);
         ResponseEntity<ResponseApi> response = new ResponseEntity<ResponseApi>(responseApi, HttpStatus.OK);
         log.info("--- Направляется ответ: {" + "HttpStatus:" + response.getStatusCode() + "," + response.getBody() + "}");
         return response;
+    }
+
+    @Override
+    public Post getPostByTitle(String title) {
+        return postRepository.getPostByTitle(title);
     }
 
     public Post getPostById(int id) {
@@ -125,7 +128,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (offset < 0 || limit < 1 || !isModeValid) {
             log.warn("--- Неверный сдвиг, лимит или режим отображения постов: " +
                     "offset:" + offset + "," + "limit:" + limit + "," + "mode:" + mode);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : "",
                     !isModeValid ? "Режим отображения не распознан" : ""),
@@ -158,7 +161,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
     public ResponseEntity<ResponseApi> searchPosts(int offset, String query, int limit) {
         if (offset < 0 || limit < 1) {
             log.warn("--- Неверный сдвиг или лимит постов: " + "offset:" + offset + "," + "limit:" + limit);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : ""),
                     HttpStatus.BAD_REQUEST);
@@ -178,7 +181,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (offset < 0 || limit < 1 || date == null) {
             log.warn("--- Неверные параметры: " + "offset:" + offset + "," + "limit:" + limit + "," +
                     "date:" + date);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : "",
                     date == null ? "Дата не задана" : ""),
@@ -195,13 +198,13 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
     }
 
     public ResponseEntity<ResponseApi> getPostsByTag(int limit, String tag, int offset) {
-        if (offset < 0 || limit < 1 || tag == null || tag.equals("")) {
+        if (offset < 0 || limit < 1 || tag == null || tag.equals("") || tag.isBlank()) {
             log.warn("--- Неверные параметры: " + "offset:" + offset + "," +
                     "limit:" + limit + "," + "tag:" + tag);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : "",
-                    (tag == null || tag.equals("")) ? "Тег не задан" : ""),
+                    (tag == null || tag.equals("") || tag.isBlank()) ? "Тег не задан" : ""),
                     HttpStatus.BAD_REQUEST);
         }
         List<Post> postsToShow = postRepository.getPostsByTag(tag, limit, offset);
@@ -222,7 +225,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (offset < 0 || limit < 1 || !isStatusValid) {
             log.warn("--- Неверные параметры: " + "offset:" + offset + "," +
                     "limit:" + limit + "," + "status:" + status);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : "",
                     !isStatusValid ? "Статус модерации не распознан" : ""),
@@ -233,20 +236,20 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
         if (!user.isModerator()) {
             log.info("--- Для данного действия пользователю " + user.getId() + ":" + user.getName() + " требуются права модератора");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Требуются права модератора"),
+                    new BadRequestMessageResponse("Требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
         }
 
         ArrayList<Post> postsToShow = new ArrayList<>();
         int count = 0;
-        switch (status) {
+        switch (status.toLowerCase()) {
             case ("new"):
                 postsToShow = (ArrayList<Post>) postRepository.getPostsForModeration(limit, offset);
                 count = postRepository.countPostsForModeration();
@@ -278,7 +281,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (offset < 0 || limit < 1 || !isStatusValid) {
             log.warn("--- Неверные параметры: " +
                     "offset:" + offset + "," + "limit:" + limit + "," + "status:" + status);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     offset < 0 ? "Передан отрицательный параметр сдвига" : "",
                     limit < 1 ? "Ограничение количества отображаемых постов менее 1" : "",
                     !isStatusValid ? "Статус модерации не распознан" : ""),
@@ -289,13 +292,13 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
         ArrayList<Post> postsToShow = new ArrayList<>();
         int count = 0;
-        switch (status) {
+        switch (status.toLowerCase()) {
             case ("inactive"):
                 postsToShow = (ArrayList<Post>) postRepository.getMyNotActivePosts(user.getId(), limit, offset);
                 count = postRepository.countMyNotActivePosts(user.getId());
@@ -333,7 +336,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         boolean isTitleValidFlag = isTitleValid(title);
         if (!isTextValidFlag || !isTitleValidFlag) {
             log.warn("--- Неверные параметры: " + "text:" + text + "," + "title:" + title);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     !isTextValidFlag ? "Текст не задан, слишком короткий (<" + postBodyMinLength
                             + " символов) или превышает максимальный размер (" + postBodyMaxLength
                             + " символов)" : "",
@@ -347,7 +350,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -358,7 +361,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
 
         if (!user.isModerator() && !isMultiuserMode())
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Для добавления поста требуется включить " +
+                    new BadRequestMessageResponse("Для добавления поста требуется включить " +
                             "многопользовательский режим и/или требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
 
@@ -383,14 +386,14 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (image == null) {
             log.warn("--- Отсутствует изображение для загрузки");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Отсутствует изображение для загрузки"),
+                    new BadRequestMessageResponse("Отсутствует изображение для загрузки"),
                     HttpStatus.BAD_REQUEST);
         }
         User user = userRepositoryService.getUserBySession(session);
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -410,7 +413,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         } else {
             log.warn("--- Не удалось создать папку: " + directoryPath);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Не удалось создать папку для загрузки"),
+                    new BadRequestMessageResponse("Не удалось создать папку для загрузки"),
                     HttpStatus.BAD_REQUEST);
         }
         ResponseEntity<String> response = new ResponseEntity<>(fileDestPath, HttpStatus.OK);
@@ -419,28 +422,26 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
     }
 
     public ResponseEntity<ResponseApi> editPost(int id, AddPostRequest addPostRequest, HttpSession session) {
-        // Закомментировано изменение даты/времени, однако на фронте при редактировании поста есть возможность
-        // поменять дату и время поста
-//        String timeString = postRequest.getTime();
+        String timeString = addPostRequest.getTime();
         byte active = addPostRequest.getActive();
         String title = addPostRequest.getTitle();
         String text = addPostRequest.getText();
         List<String> tags = addPostRequest.getTags();
-//        LocalDateTime time = parseLocalDateTime(timeString);
+        LocalDateTime time = parseLocalDateTime(timeString);
         Post currentPost = getPostById(id);
         if (currentPost == null) {
             log.warn("--- Не найдет пост с id:" + id);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пост не найден"),
+                    new BadRequestMessageResponse("Пост не найден"),
                     HttpStatus.BAD_REQUEST);
         }
-//        if (time == null || time.isBefore(LocalDateTime.now())) time = LocalDateTime.now();
+        if (time == null || time.isBefore(LocalDateTime.now())) time = LocalDateTime.now();
         boolean isTextValidFlag = isTextValid(text);
         boolean isTitleValidFlag = isTitleValid(title);
         if (!isTextValidFlag || !isTitleValidFlag) {
             log.warn("--- Неверные параметры: " +
                     "text:" + text + "," + "title:" + title);
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     !isTextValidFlag ? "Текст не задан, слишком короткий (<" + postBodyMinLength
                             + " символов) или превышает максимальный размер (" + postBodyMaxLength
                             + " символов)" : "",
@@ -454,29 +455,31 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
         if (!user.isModerator() && !(isMultiuserMode() && currentPost.getUser() == user))
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Для редактирования поста требуется включить " +
+                    new BadRequestMessageResponse("Для редактирования поста требуется включить " +
                             "многопользовательский режим и быть его автором и/или требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
         currentPost.setActive(active == 1);
-//        currentPost.setTime(time);
+        currentPost.setTime(time);
         currentPost.setTitle(title);
         currentPost.setText(text);
         currentPost.setModerationStatus(isPremoderation() ? ModerationStatus.NEW : ModerationStatus.ACCEPTED);
         postRepository.save(currentPost); // Пост пересохранили, меняем теги и связи с тегами, удаляя старые и добавляя новые
         currentPost.getTagsToPostsSet().forEach(tag2post -> {
-            tagRepositoryService.deleteTag(tag2post.getTag());
+            currentPost.getTagsToPostsSet().remove(tag2post);
             tagToPostRepositoryService.deleteTagToPost(tag2post);
         });
         log.info("--- Удалены теги к посту с id:" + currentPost.getId());
         for (String currentTagName : tags) {
             if (!currentTagName.isBlank()) {
-                Tag currentTag = tagRepositoryService.addTag(new Tag(currentTagName));
+                Tag currentTag = tagRepository.getTagByTagName(currentTagName) != null ? // Создаем теги, только если их еще не было
+                        tagRepository.getTagByTagName(currentTagName) :
+                        tagRepositoryService.addTag(new Tag(currentTagName));
                 tagToPostRepositoryService.addTagToPost(new TagToPost(currentTag, currentPost));
                 log.info("--- К посту с id:" + currentPost.getId() + " добавлен тэг {" + currentTagName + "}");
             }
@@ -493,7 +496,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (!decision.equals("DECLINE") && !decision.equals("ACCEPT")) {
             log.warn("--- Неверный параметр: decision:" + decision);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Решение по модерации не распознано"),
+                    new BadRequestMessageResponse("Решение по модерации не распознано"),
                     HttpStatus.BAD_REQUEST);
         }
         // Если пользователь залогинен
@@ -501,14 +504,14 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
         if (!user.isModerator()) {
             log.info("--- Для данного действия пользователю " + user.getId() + ":" + user.getName() + " требуются права модератора");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Для модерации поста требуются права модератора"),
+                    new BadRequestMessageResponse("Для модерации поста требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -516,7 +519,7 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
         if (post == null) {
             log.warn("--- Не найден пост с id: " + postId);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пост не найден"),
+                    new BadRequestMessageResponse("Пост не найден"),
                     HttpStatus.BAD_REQUEST);
         }
 
@@ -572,7 +575,8 @@ public class PostRepositoryServiceImpl implements PostRepositoryService {
 
     private boolean isTextValid(String text) {
         if (text == null || text.equals("")) return false;
-        String cleanText = htmlParserService.getTextStringFromHtml(text);
+        String cleanText = HtmlParserServiceImpl.getTextStringFromHtml(text);
+        assert cleanText != null;
         return cleanText.length() <= postBodyMaxLength && cleanText.length() >= postBodyMinLength;
     }
 

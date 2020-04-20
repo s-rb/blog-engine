@@ -175,4 +175,9 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
             "AND p.is_active = 1 " +
             "AND p.moderation_status = ?1) AS searched_posts", nativeQuery = true)
     int countMyActivePosts(String moderationStatus, int id);
+
+    @Query(value = "SELECT DISTINCT * FROM posts p " +
+            "WHERE (p.title LIKE %?%) " +
+            "LIMIT 1", nativeQuery = true)
+    Post getPostByTitle(String title);
 }

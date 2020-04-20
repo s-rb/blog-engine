@@ -1,0 +1,474 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GetPostResponse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.api.response</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GetPostResponse (main.api.response)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GetPostResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    55,6%
+  </span>
+  <span class="absValue">
+    (15/ 27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63,6%
+  </span>
+  <span class="absValue">
+    (49/ 77)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">GetPostResponse$Comment</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (6/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    57,9%
+  </span>
+  <span class="absValue">
+    (11/ 19)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GetPostResponse$Comment$CommentAuthor</td>
+<td class="coverageStat">
+  <span class="percent">
+    62,5%
+  </span>
+  <span class="absValue">
+    (5/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    60%
+  </span>
+  <span class="absValue">
+    (9/ 15)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">GetPostResponse$PostAuthor</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63,6%
+  </span>
+  <span class="absValue">
+    (7/ 11)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    58,8%
+  </span>
+  <span class="absValue">
+    (30/ 51)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62,3%
+  </span>
+  <span class="absValue">
+    (76/ 122)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.api.response;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import main.model.entities.Post;
+<i>4</i>&nbsp;import main.model.entities.PostComment;
+<i>5</i>&nbsp;import main.model.entities.TagToPost;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.time.LocalDate;
+<i>8</i>&nbsp;import java.time.LocalDateTime;
+<i>9</i>&nbsp;import java.time.format.DateTimeFormatter;
+<i>10</i>&nbsp;import java.util.LinkedList;
+<i>11</i>&nbsp;import java.util.List;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;public class GetPostResponse implements ResponseApi {
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    private int id;
+<i>16</i>&nbsp;    private String time;
+<i>17</i>&nbsp;    private PostAuthor user;
+<i>18</i>&nbsp;    private String title;
+<i>19</i>&nbsp;    private String text;
+<i>20</i>&nbsp;    private String announce;
+<i>21</i>&nbsp;    private int likeCount;
+<i>22</i>&nbsp;    private int dislikeCount;
+<i>23</i>&nbsp;    private int commentCount;
+<i>24</i>&nbsp;    private int viewCount;
+<i>25</i>&nbsp;    private List&lt;Comment&gt; comments;
+<i>26</i>&nbsp;    private List&lt;String&gt; tags;
+<i>27</i>&nbsp;
+<b class="fc"><i>28</i>&nbsp;    public GetPostResponse(Post post, int announceLength) {</b>
+<b class="fc"><i>29</i>&nbsp;        id = post.getId();</b>
+<b class="fc"><i>30</i>&nbsp;        time = getTimeString(post.getTime());</b>
+<b class="fc"><i>31</i>&nbsp;        user = new PostAuthor(post.getUser().getId(), post.getUser().getName());</b>
+<b class="fc"><i>32</i>&nbsp;        title = post.getTitle();</b>
+<b class="fc"><i>33</i>&nbsp;        text = post.getText();</b>
+<b class="fc"><i>34</i>&nbsp;        String temp = post.getText().replaceAll(&quot;&lt;.+?&gt;&quot;, &quot;&quot;);</b>
+<b class="fc"><i>35</i>&nbsp;        announce = temp.length() &lt; announceLength ? temp</b>
+<b class="nc"><i>36</i>&nbsp;                : temp.substring(0, announceLength) + &quot;...&quot;;</b>
+<b class="fc"><i>37</i>&nbsp;        likeCount = (int) post.getPostVotes().stream().filter(l -&gt; l.getValue() == 1).count();</b>
+<b class="fc"><i>38</i>&nbsp;        dislikeCount = (int) post.getPostVotes().stream().filter(l -&gt; l.getValue() == -1).count();</b>
+<b class="fc"><i>39</i>&nbsp;        commentCount = post.getPostComments().size();</b>
+<b class="fc"><i>40</i>&nbsp;        viewCount = post.getViewCount();</b>
+<b class="fc"><i>41</i>&nbsp;        comments = new LinkedList&lt;&gt;();</b>
+<b class="fc"><i>42</i>&nbsp;        tags = new LinkedList&lt;&gt;();</b>
+<b class="fc"><i>43</i>&nbsp;        for (PostComment c : post.getPostComments()) {</b>
+<b class="fc"><i>44</i>&nbsp;            int commentAuthorId = c.getUser().getId();</b>
+<b class="fc"><i>45</i>&nbsp;            String commentAuthorName = c.getUser().getName();</b>
+<b class="fc"><i>46</i>&nbsp;            String commentAuthorPhoto = c.getUser().getPhoto();</b>
+<b class="fc"><i>47</i>&nbsp;            Comment.CommentAuthor commentAuthor =</b>
+<i>48</i>&nbsp;                    new Comment.CommentAuthor(commentAuthorId, commentAuthorName, commentAuthorPhoto);
+<b class="fc"><i>49</i>&nbsp;            int commentId = c.getId();</b>
+<b class="fc"><i>50</i>&nbsp;            String commentTime = getTimeString(c.getTime());</b>
+<b class="fc"><i>51</i>&nbsp;            String commentText = c.getText();</b>
+<b class="fc"><i>52</i>&nbsp;            Comment comment = new Comment(commentId, commentTime, commentAuthor, commentText);</b>
+<b class="fc"><i>53</i>&nbsp;            comments.add(comment);</b>
+<b class="fc"><i>54</i>&nbsp;        }</b>
+<b class="fc"><i>55</i>&nbsp;        for (TagToPost t : post.getTagsToPostsSet()) {</b>
+<b class="fc"><i>56</i>&nbsp;            String tagName = t.getTag().getName();</b>
+<b class="fc"><i>57</i>&nbsp;            if (!tags.contains(tagName)) {</b>
+<b class="fc"><i>58</i>&nbsp;                tags.add(tagName);</b>
+<i>59</i>&nbsp;            }
+<b class="fc"><i>60</i>&nbsp;        }</b>
+<b class="fc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    private String getTimeString(LocalDateTime objectCreatedTime) {
+<b class="fc"><i>64</i>&nbsp;        StringBuilder timeString = new StringBuilder();</b>
+<b class="fc"><i>65</i>&nbsp;        if (objectCreatedTime.isAfter(LocalDate.now().atStartOfDay())</b>
+<b class="nc"><i>66</i>&nbsp;                &amp;&amp; objectCreatedTime.isBefore(LocalDateTime.now())) {</b>
+<b class="nc"><i>67</i>&nbsp;            timeString.append(&quot;Сегодня, &quot;).append(objectCreatedTime.format(DateTimeFormatter.ofPattern(&quot;HH:mm&quot;)));</b>
+<b class="fc"><i>68</i>&nbsp;        } else if (objectCreatedTime.isAfter(LocalDate.now().atStartOfDay().minusDays(1))) {</b>
+<b class="nc"><i>69</i>&nbsp;            timeString.append(&quot;Вчера, &quot;).append(objectCreatedTime.format(DateTimeFormatter.ofPattern(&quot;HH:mm&quot;)));</b>
+<i>70</i>&nbsp;        } else {
+<b class="fc"><i>71</i>&nbsp;            timeString.append(objectCreatedTime.format(DateTimeFormatter.ofPattern(&quot;yyyy-MM-dd, HH:mm&quot;)));</b>
+<i>72</i>&nbsp;        }
+<b class="fc"><i>73</i>&nbsp;        return timeString.toString();</b>
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    public int getId() {
+<b class="fc"><i>77</i>&nbsp;        return id;</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    public void setId(int id) {
+<b class="nc"><i>81</i>&nbsp;        this.id = id;</b>
+<b class="nc"><i>82</i>&nbsp;    }</b>
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;    public String getTime() {
+<b class="fc"><i>85</i>&nbsp;        return time;</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;    public void setTime(String time) {
+<b class="nc"><i>89</i>&nbsp;        this.time = time;</b>
+<b class="nc"><i>90</i>&nbsp;    }</b>
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    public PostAuthor getUser() {
+<b class="fc"><i>93</i>&nbsp;        return user;</b>
+<i>94</i>&nbsp;    }
+<i>95</i>&nbsp;
+<i>96</i>&nbsp;    public void setUser(PostAuthor user) {
+<b class="nc"><i>97</i>&nbsp;        this.user = user;</b>
+<b class="nc"><i>98</i>&nbsp;    }</b>
+<i>99</i>&nbsp;
+<i>100</i>&nbsp;    public String getTitle() {
+<b class="fc"><i>101</i>&nbsp;        return title;</b>
+<i>102</i>&nbsp;    }
+<i>103</i>&nbsp;
+<i>104</i>&nbsp;    public void setTitle(String title) {
+<b class="nc"><i>105</i>&nbsp;        this.title = title;</b>
+<b class="nc"><i>106</i>&nbsp;    }</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;    public String getAnnounce() {
+<b class="fc"><i>109</i>&nbsp;        return announce;</b>
+<i>110</i>&nbsp;    }
+<i>111</i>&nbsp;
+<i>112</i>&nbsp;    public void setAnnounce(String announce) {
+<b class="nc"><i>113</i>&nbsp;        this.announce = announce;</b>
+<b class="nc"><i>114</i>&nbsp;    }</b>
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;    public int getCommentCount() {
+<b class="fc"><i>117</i>&nbsp;        return commentCount;</b>
+<i>118</i>&nbsp;    }
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    public void setCommentCount(int commentCount) {
+<b class="nc"><i>121</i>&nbsp;        this.commentCount = commentCount;</b>
+<b class="nc"><i>122</i>&nbsp;    }</b>
+<i>123</i>&nbsp;
+<i>124</i>&nbsp;    public int getLikeCount() {
+<b class="fc"><i>125</i>&nbsp;        return likeCount;</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;    public void setLikeCount(int likeCount) {
+<b class="nc"><i>129</i>&nbsp;        this.likeCount = likeCount;</b>
+<b class="nc"><i>130</i>&nbsp;    }</b>
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;    public int getDislikeCount() {
+<b class="fc"><i>133</i>&nbsp;        return dislikeCount;</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    public void setDislikeCount(int dislikeCount) {
+<b class="nc"><i>137</i>&nbsp;        this.dislikeCount = dislikeCount;</b>
+<b class="nc"><i>138</i>&nbsp;    }</b>
+<i>139</i>&nbsp;
+<i>140</i>&nbsp;    public int getViewCount() {
+<b class="fc"><i>141</i>&nbsp;        return viewCount;</b>
+<i>142</i>&nbsp;    }
+<i>143</i>&nbsp;
+<i>144</i>&nbsp;    public void setViewCount(int viewCount) {
+<b class="nc"><i>145</i>&nbsp;        this.viewCount = viewCount;</b>
+<b class="nc"><i>146</i>&nbsp;    }</b>
+<i>147</i>&nbsp;
+<i>148</i>&nbsp;    public List&lt;Comment&gt; getComments() {
+<b class="fc"><i>149</i>&nbsp;        return comments;</b>
+<i>150</i>&nbsp;    }
+<i>151</i>&nbsp;
+<i>152</i>&nbsp;    public void setComments(List&lt;Comment&gt; comments) {
+<b class="nc"><i>153</i>&nbsp;        this.comments = comments;</b>
+<b class="nc"><i>154</i>&nbsp;    }</b>
+<i>155</i>&nbsp;
+<i>156</i>&nbsp;    public List&lt;String&gt; getTags() {
+<b class="fc"><i>157</i>&nbsp;        return tags;</b>
+<i>158</i>&nbsp;    }
+<i>159</i>&nbsp;
+<i>160</i>&nbsp;    public void setTags(List&lt;String&gt; tags) {
+<b class="nc"><i>161</i>&nbsp;        this.tags = tags;</b>
+<b class="nc"><i>162</i>&nbsp;    }</b>
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    public String getText() {
+<b class="fc"><i>165</i>&nbsp;        return text;</b>
+<i>166</i>&nbsp;    }
+<i>167</i>&nbsp;
+<i>168</i>&nbsp;    public void setText(String text) {
+<b class="nc"><i>169</i>&nbsp;        this.text = text;</b>
+<b class="nc"><i>170</i>&nbsp;    }</b>
+<i>171</i>&nbsp;
+<i>172</i>&nbsp;    static class PostAuthor {
+<i>173</i>&nbsp;
+<i>174</i>&nbsp;        private int id;
+<i>175</i>&nbsp;        private String name;
+<i>176</i>&nbsp;
+<b class="fc"><i>177</i>&nbsp;        public PostAuthor(int id, String name) {</b>
+<b class="fc"><i>178</i>&nbsp;            this.id = id;</b>
+<b class="fc"><i>179</i>&nbsp;            this.name = name;</b>
+<b class="fc"><i>180</i>&nbsp;        }</b>
+<i>181</i>&nbsp;
+<i>182</i>&nbsp;        public int getId() {
+<b class="fc"><i>183</i>&nbsp;            return id;</b>
+<i>184</i>&nbsp;        }
+<i>185</i>&nbsp;
+<i>186</i>&nbsp;        public void setId(int id) {
+<b class="nc"><i>187</i>&nbsp;            this.id = id;</b>
+<b class="nc"><i>188</i>&nbsp;        }</b>
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;        public String getName() {
+<b class="fc"><i>191</i>&nbsp;            return name;</b>
+<i>192</i>&nbsp;        }
+<i>193</i>&nbsp;
+<i>194</i>&nbsp;        public void setName(String name) {
+<b class="nc"><i>195</i>&nbsp;            this.name = name;</b>
+<b class="nc"><i>196</i>&nbsp;        }</b>
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;        @Override
+<i>199</i>&nbsp;        public String toString() {
+<b class="fc"><i>200</i>&nbsp;            return &quot;PostAuthorApi{&quot; +</b>
+<i>201</i>&nbsp;                    &quot;id=&quot; + id +
+<i>202</i>&nbsp;                    &quot;, name=&#39;&quot; + name + &#39;\&#39;&#39; +
+<i>203</i>&nbsp;                    &#39;}&#39;;
+<i>204</i>&nbsp;        }
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    static class Comment {
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;        private int id;
+<i>210</i>&nbsp;        private String time;
+<i>211</i>&nbsp;        private CommentAuthor user;
+<i>212</i>&nbsp;        private String text;
+<i>213</i>&nbsp;
+<b class="fc"><i>214</i>&nbsp;        public Comment(int id, String time, CommentAuthor user, String text) {</b>
+<b class="fc"><i>215</i>&nbsp;            this.id = id;</b>
+<b class="fc"><i>216</i>&nbsp;            this.time = time;</b>
+<b class="fc"><i>217</i>&nbsp;            this.user = user;</b>
+<b class="fc"><i>218</i>&nbsp;            this.text = text;</b>
+<b class="fc"><i>219</i>&nbsp;        }</b>
+<i>220</i>&nbsp;
+<i>221</i>&nbsp;        public int getId() {
+<b class="fc"><i>222</i>&nbsp;            return id;</b>
+<i>223</i>&nbsp;        }
+<i>224</i>&nbsp;
+<i>225</i>&nbsp;        public void setId(int id) {
+<b class="nc"><i>226</i>&nbsp;            this.id = id;</b>
+<b class="nc"><i>227</i>&nbsp;        }</b>
+<i>228</i>&nbsp;
+<i>229</i>&nbsp;        public String getTime() {
+<b class="fc"><i>230</i>&nbsp;            return time;</b>
+<i>231</i>&nbsp;        }
+<i>232</i>&nbsp;
+<i>233</i>&nbsp;        public void setTime(String time) {
+<b class="nc"><i>234</i>&nbsp;            this.time = time;</b>
+<b class="nc"><i>235</i>&nbsp;        }</b>
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        public CommentAuthor getUser() {
+<b class="fc"><i>238</i>&nbsp;            return user;</b>
+<i>239</i>&nbsp;        }
+<i>240</i>&nbsp;
+<i>241</i>&nbsp;        public void setUser(CommentAuthor user) {
+<b class="nc"><i>242</i>&nbsp;            this.user = user;</b>
+<b class="nc"><i>243</i>&nbsp;        }</b>
+<i>244</i>&nbsp;
+<i>245</i>&nbsp;        public String getText() {
+<b class="fc"><i>246</i>&nbsp;            return text;</b>
+<i>247</i>&nbsp;        }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;        public void setText(String text) {
+<b class="nc"><i>250</i>&nbsp;            this.text = text;</b>
+<b class="nc"><i>251</i>&nbsp;        }</b>
+<i>252</i>&nbsp;
+<i>253</i>&nbsp;        @Override
+<i>254</i>&nbsp;        public String toString() {
+<b class="fc"><i>255</i>&nbsp;            return &quot;PostCommentApi{&quot; +</b>
+<i>256</i>&nbsp;                    &quot;id=&quot; + id +
+<i>257</i>&nbsp;                    &quot;, time=&#39;&quot; + time + &#39;\&#39;&#39; +
+<i>258</i>&nbsp;                    &quot;, user=&quot; + user +
+<i>259</i>&nbsp;                    &quot;, text=&#39;&quot; + text + &#39;\&#39;&#39; +
+<i>260</i>&nbsp;                    &#39;}&#39;;
+<i>261</i>&nbsp;        }
+<i>262</i>&nbsp;
+<i>263</i>&nbsp;        static class CommentAuthor {
+<i>264</i>&nbsp;
+<i>265</i>&nbsp;            private int id;
+<i>266</i>&nbsp;            private String name;
+<i>267</i>&nbsp;            private String photo;
+<i>268</i>&nbsp;
+<b class="fc"><i>269</i>&nbsp;            public CommentAuthor(int id, String name, String photo) {</b>
+<b class="fc"><i>270</i>&nbsp;                this.id = id;</b>
+<b class="fc"><i>271</i>&nbsp;                this.name = name;</b>
+<b class="fc"><i>272</i>&nbsp;                this.photo = photo;</b>
+<b class="fc"><i>273</i>&nbsp;            }</b>
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;            public int getId() {
+<b class="fc"><i>276</i>&nbsp;                return id;</b>
+<i>277</i>&nbsp;            }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;            public void setId(int id) {
+<b class="nc"><i>280</i>&nbsp;                this.id = id;</b>
+<b class="nc"><i>281</i>&nbsp;            }</b>
+<i>282</i>&nbsp;
+<i>283</i>&nbsp;            public String getName() {
+<b class="fc"><i>284</i>&nbsp;                return name;</b>
+<i>285</i>&nbsp;            }
+<i>286</i>&nbsp;
+<i>287</i>&nbsp;            public void setName(String name) {
+<b class="nc"><i>288</i>&nbsp;                this.name = name;</b>
+<b class="nc"><i>289</i>&nbsp;            }</b>
+<i>290</i>&nbsp;
+<i>291</i>&nbsp;            public String getPhoto() {
+<b class="fc"><i>292</i>&nbsp;                return photo;</b>
+<i>293</i>&nbsp;            }
+<i>294</i>&nbsp;
+<i>295</i>&nbsp;            public void setPhoto(String photo) {
+<b class="nc"><i>296</i>&nbsp;                this.photo = photo;</b>
+<b class="nc"><i>297</i>&nbsp;            }</b>
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;            @Override
+<i>300</i>&nbsp;            public String toString() {
+<b class="fc"><i>301</i>&nbsp;                return &quot;PostCommentAuthorApi{&quot; +</b>
+<i>302</i>&nbsp;                        &quot;id=&quot; + id +
+<i>303</i>&nbsp;                        &quot;, name=&#39;&quot; + name + &#39;\&#39;&#39; +
+<i>304</i>&nbsp;                        &quot;, photo=&#39;&quot; + photo + &#39;\&#39;&#39; +
+<i>305</i>&nbsp;                        &#39;}&#39;;
+<i>306</i>&nbsp;            }
+<i>307</i>&nbsp;        }
+<i>308</i>&nbsp;    }
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    @Override
+<i>311</i>&nbsp;    public String toString() {
+<b class="fc"><i>312</i>&nbsp;        return &quot;ResponsePost{&quot; +</b>
+<i>313</i>&nbsp;                &quot;id=&quot; + id +
+<i>314</i>&nbsp;                &quot;, time=&#39;&quot; + time + &#39;\&#39;&#39; +
+<i>315</i>&nbsp;                &quot;, user=&quot; + user +
+<i>316</i>&nbsp;                &quot;, title=&#39;&quot; + title + &#39;\&#39;&#39; +
+<i>317</i>&nbsp;                &quot;, text=&#39;&quot; + text + &#39;\&#39;&#39; +
+<i>318</i>&nbsp;                &quot;, announce=&#39;&quot; + announce + &#39;\&#39;&#39; +
+<i>319</i>&nbsp;                &quot;, likeCount=&quot; + likeCount +
+<i>320</i>&nbsp;                &quot;, dislikeCount=&quot; + dislikeCount +
+<i>321</i>&nbsp;                &quot;, commentCount=&quot; + commentCount +
+<i>322</i>&nbsp;                &quot;, viewCount=&quot; + viewCount +
+<i>323</i>&nbsp;                &quot;, comments=&quot; + comments +
+<i>324</i>&nbsp;                &quot;, tags=&quot; + tags +
+<i>325</i>&nbsp;                &#39;}&#39;;
+<i>326</i>&nbsp;    }
+<i>327</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

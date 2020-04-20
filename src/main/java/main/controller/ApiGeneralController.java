@@ -47,8 +47,7 @@ public class ApiGeneralController {
         log.info("--- Получен POST запрос на /api/image со следующими параметрами: {" +
                 "SessionID:" + request.getSession().getId() + "," +
                 "ImageFileName:" + image.getOriginalFilename() + "," +
-                "ImageFileSize:" + image.getSize()
-                + "}");
+                "ImageFileSize:" + image.getSize() + "}");
         ResponseEntity<?> responseEntity = null;
         try {
             responseEntity = postRepoService.uploadImage(image, request.getSession());
@@ -127,8 +126,7 @@ public class ApiGeneralController {
                 "Password:" + editProfileRequest.getPassword() + "," +
                 "RemovePhoto:" + editProfileRequest.getRemovePhoto() + "," +
                 "PhotoFileName:" + editProfileRequest.getPhoto().getOriginalFilename() + "," +
-                "PhotoFileSize:" + editProfileRequest.getPhoto().getSize()
-                + "}");
+                "PhotoFileSize:" + editProfileRequest.getPhoto().getSize() + "}");
         return userRepoService.editProfile(editProfileRequest, request.getSession());
     }
 
