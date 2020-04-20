@@ -23,8 +23,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: #gmail login
-    password:  #somepassword (application password generated for your google account)
+    username: surkov.r.b #gmail login
+    password: cvrohubyuouzcqkp #somepassword (application password generated for your google account)
     properties:
       mail:
         transport:
@@ -71,7 +71,7 @@ user:
   timeout_edit_profile: 3600000 # ms
   password:
     restore_key_length: 45
-    restore_pass_message_string: "/login/change-password/"    # + код для восстановления
+    restore_pass_message_string: "/login/change-password/"    # + передается код для восстановления
     restore_message_subject: "Ссылка для восстановление пароля"
     validation_regex: "^.{6,}$"
     hashing_algorithm: MD5
