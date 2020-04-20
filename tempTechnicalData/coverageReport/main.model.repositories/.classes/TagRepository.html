@@ -1,0 +1,105 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TagRepository</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.model.repositories</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TagRepository (main.model.repositories)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">TagRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.model.repositories;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import main.model.entities.Tag;
+<i>4</i>&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+<i>5</i>&nbsp;import org.springframework.data.jpa.repository.Query;
+<i>6</i>&nbsp;import org.springframework.stereotype.Repository;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.util.List;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;@Repository
+<i>11</i>&nbsp;public interface TagRepository extends JpaRepository&lt;Tag, Integer&gt; {
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    @Query(value = &quot;SELECT * FROM tags t&quot; +
+<i>14</i>&nbsp;            &quot; WHERE t.name = ?&quot;, nativeQuery = true)
+<i>15</i>&nbsp;    Tag getTagByTagName(String currentTagName);
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    // ѕолучаютс€ теги только на доступные на сайте посты
+<i>18</i>&nbsp;    @Query(value = &quot;SELECT DISTINCT t.* FROM tags AS t &quot; +
+<i>19</i>&nbsp;            &quot;INNER JOIN tag2post t2p ON t.id = t2p.tag_id &quot; +
+<i>20</i>&nbsp;            &quot;INNER JOIN posts p ON p.id = t2p.post_id &quot; +
+<i>21</i>&nbsp;            &quot;WHERE p.is_active = 1 &quot; +
+<i>22</i>&nbsp;            &quot;AND p.moderation_status = &#39;ACCEPTED&#39; &quot; +
+<i>23</i>&nbsp;            &quot;AND p.time &lt; NOW() &quot; +
+<i>24</i>&nbsp;            &quot;ORDER BY t.id DESC&quot;, nativeQuery = true)
+<i>25</i>&nbsp;    List&lt;Tag&gt; getAllTagsListSortedByIdDesc();
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    @Query(value = &quot;SELECT DISTINCT t.* FROM tags AS t &quot; +
+<i>28</i>&nbsp;            &quot;INNER JOIN tag2post t2p ON t.id = t2p.tag_id &quot; +
+<i>29</i>&nbsp;            &quot;INNER JOIN posts p ON p.id = t2p.post_id &quot; +
+<i>30</i>&nbsp;            &quot;WHERE (t.name LIKE %?%) &quot; +
+<i>31</i>&nbsp;            &quot;AND p.is_active = 1 &quot; +
+<i>32</i>&nbsp;            &quot;AND p.moderation_status = &#39;ACCEPTED&#39; &quot; +
+<i>33</i>&nbsp;            &quot;AND p.time &lt; NOW() &quot; +
+<i>34</i>&nbsp;            &quot;ORDER BY t.id DESC&quot;, nativeQuery = true)
+<i>35</i>&nbsp;    List&lt;Tag&gt; getAllTagsListByQuerySortedByIdDesc(String query);
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    // ƒл€ подсчета веса тега - по количеству ссылок в постах
+<i>38</i>&nbsp;    @Query(value = &quot;SELECT COUNT(*) &quot; +
+<i>39</i>&nbsp;            &quot;FROM tag2post tp &quot; +
+<i>40</i>&nbsp;            &quot;INNER JOIN posts p ON tp.post_id = p.id &quot; +
+<i>41</i>&nbsp;            &quot;WHERE p.is_active = 1 &quot; +
+<i>42</i>&nbsp;            &quot;AND p.moderation_status = &#39;ACCEPTED&#39; &quot; +
+<i>43</i>&nbsp;            &quot;AND p.time &lt; NOW() &quot; +
+<i>44</i>&nbsp;            &quot;AND tag_id = ?&quot;, nativeQuery = true)
+<i>45</i>&nbsp;    Integer getTagCountByTagId(int tagId);
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    @Query(value = &quot;SELECT MAX(tag_count) &quot; +
+<i>48</i>&nbsp;            &quot;FROM (&quot; +
+<i>49</i>&nbsp;            &quot;SELECT COUNT(post_id) AS tag_count &quot; +
+<i>50</i>&nbsp;            &quot;FROM tag2post tp &quot; +
+<i>51</i>&nbsp;            &quot;INNER JOIN posts p ON tp.post_id = p.id &quot; +
+<i>52</i>&nbsp;            &quot;WHERE p.is_active = 1 &quot; +
+<i>53</i>&nbsp;            &quot;AND p.moderation_status = &#39;ACCEPTED&#39; &quot; +
+<i>54</i>&nbsp;            &quot;AND p.time &lt; NOW() &quot; +
+<i>55</i>&nbsp;            &quot;GROUP BY tp.tag_id) &quot; +
+<i>56</i>&nbsp;            &quot;AS max_tag_count&quot;, nativeQuery = true)
+<i>57</i>&nbsp;    Integer getMaxTagCount();
+<i>58</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

@@ -40,4 +40,6 @@ public interface PostRepositoryService {
     Post getPostById(int postId);
 
     ResponseEntity<ResponseApi> getPost(int id, HttpSession session);
+
+    Post getPostByTitle(String title);
 }

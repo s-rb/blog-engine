@@ -1,7 +1,9 @@
 package main.api.response;
 
 import java.sql.Date;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class GetPostsByCalendarResponse implements ResponseApi {
 

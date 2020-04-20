@@ -8,7 +8,8 @@ public class RestorePassRequest implements RequestApi {
         this.email = email;
     }
 
-    public RestorePassRequest() {}
+    public RestorePassRequest() {
+    }
 
     public String getEmail() {
         return email;

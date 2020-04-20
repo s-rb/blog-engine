@@ -1,0 +1,69 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UserRepository</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.model.repositories</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UserRepository (main.model.repositories)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">UserRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.model.repositories;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import main.model.entities.User;
+<i>4</i>&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+<i>5</i>&nbsp;import org.springframework.data.jpa.repository.Query;
+<i>6</i>&nbsp;import org.springframework.stereotype.Repository;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;@Repository
+<i>9</i>&nbsp;public interface UserRepository extends JpaRepository&lt;User, Integer&gt; {
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;    @Query(value = &quot;SELECT * FROM users u&quot; +
+<i>12</i>&nbsp;            &quot; WHERE u.email = ?&quot;, nativeQuery = true)
+<i>13</i>&nbsp;    User getUserByEmail(String email);
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    @Query(value = &quot;SELECT * FROM users u&quot; +
+<i>16</i>&nbsp;            &quot; WHERE u.code = ?&quot;, nativeQuery = true)
+<i>17</i>&nbsp;    User getUserByCode(String code);
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    @Query(value = &quot;SELECT * FROM users u&quot; +
+<i>20</i>&nbsp;            &quot; WHERE u.name = ?&quot;, nativeQuery = true)
+<i>21</i>&nbsp;    User getUserByName(String name);
+<i>22</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

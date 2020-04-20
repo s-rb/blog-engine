@@ -37,12 +37,22 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     // Для подсчета веса тега - по количеству ссылок в постах
     @Query(value = "SELECT COUNT(*) " +
             "FROM tag2post tp " +
-            "WHERE tag_id = ?", nativeQuery = true)
+            "INNER JOIN posts p ON tp.post_id = p.id " +
+            "WHERE p.is_active = 1 " +
+            "AND p.moderation_status = 'ACCEPTED' " +
+            "AND p.time < NOW() " +
+            "AND tag_id = ?", nativeQuery = true)
     Integer getTagCountByTagId(int tagId);
 
     @Query(value = "SELECT MAX(tag_count) " +
-            "FROM (SELECT COUNT(post_id) AS tag_count " +
-            "FROM tag2post tp GROUP BY tp.tag_id) " +
+            "FROM (" +
+            "SELECT COUNT(post_id) AS tag_count " +
+            "FROM tag2post tp " +
+            "INNER JOIN posts p ON tp.post_id = p.id " +
+            "WHERE p.is_active = 1 " +
+            "AND p.moderation_status = 'ACCEPTED' " +
+            "AND p.time < NOW() " +
+            "GROUP BY tp.tag_id) " +
             "AS max_tag_count", nativeQuery = true)
     Integer getMaxTagCount();
 }
