@@ -1,0 +1,71 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CaptchaRepository</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.model.repositories</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CaptchaRepository (main.model.repositories)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+</tr>
+<tr>
+  <td class="name">CaptchaRepository</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.model.repositories;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import main.model.entities.CaptchaCode;
+<i>4</i>&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
+<i>5</i>&nbsp;import org.springframework.data.jpa.repository.Modifying;
+<i>6</i>&nbsp;import org.springframework.data.jpa.repository.Query;
+<i>7</i>&nbsp;import org.springframework.stereotype.Repository;
+<i>8</i>&nbsp;import org.springframework.transaction.annotation.Transactional;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import java.time.LocalDateTime;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;@Repository
+<i>13</i>&nbsp;public interface CaptchaRepository extends JpaRepository&lt;CaptchaCode, Integer&gt; {
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;    @Transactional
+<i>16</i>&nbsp;    @Modifying
+<i>17</i>&nbsp;    @Query(value = &quot;DELETE FROM captcha_codes &quot; +
+<i>18</i>&nbsp;            &quot;WHERE time &lt; ?&quot;, nativeQuery = true)
+<i>19</i>&nbsp;    void deleteOldCaptchas(LocalDateTime captchaDeletedBeforeTime);
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    @Query(value = &quot;SELECT * FROM captcha_codes c&quot; +
+<i>22</i>&nbsp;            &quot; WHERE c.secret_code = ?&quot;, nativeQuery = true)
+<i>23</i>&nbsp;    CaptchaCode getCaptchaBySecretCode(String secretCode);
+<i>24</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

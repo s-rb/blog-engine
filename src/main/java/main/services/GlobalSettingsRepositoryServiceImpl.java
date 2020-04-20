@@ -2,7 +2,7 @@ package main.services;
 
 import lombok.extern.slf4j.Slf4j;
 import main.api.request.SetGlobalSettingsRequest;
-import main.api.response.BadRequestMsgWithErrorsResponse;
+import main.api.response.BadRequestMessageResponse;
 import main.api.response.GetGlobalSettingsResponse;
 import main.api.response.ResponseApi;
 import main.model.entities.GlobalSettings;
@@ -55,7 +55,7 @@ public class GlobalSettingsRepositoryServiceImpl implements GlobalSettingsReposi
         // Проверка: заданы ли какие-то параметры
         if (multiUserModeSetting == null && postPremoderationSetting == null && statisticsIsPublicSetting == null) {
             ResponseEntity<ResponseApi> response = new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Не переданы параметры настроек"),
+                    new BadRequestMessageResponse("Не переданы параметры настроек"),
                     HttpStatus.BAD_REQUEST);
             log.warn("--- Не заданы параметры настроек");
             return response;
@@ -65,14 +65,14 @@ public class GlobalSettingsRepositoryServiceImpl implements GlobalSettingsReposi
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<ResponseApi>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
         if (!user.isModerator()) {
             log.info("--- Для данного действия пользователю " + user.getId() + ":"
                     + user.getName() + " требуются права модератора");
             return new ResponseEntity<ResponseApi>(
-                    new BadRequestMsgWithErrorsResponse("Для данного действия требуются права модератора"),
+                    new BadRequestMessageResponse("Для данного действия требуются права модератора"),
                     HttpStatus.BAD_REQUEST);
         }
         // Устанавливаем новые настройки и получаем результат

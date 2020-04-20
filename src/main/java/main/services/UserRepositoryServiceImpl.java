@@ -3,6 +3,7 @@ package main.services;
 import lombok.extern.slf4j.Slf4j;
 import main.api.request.*;
 import main.api.response.*;
+import main.model.ModerationStatus;
 import main.model.entities.*;
 import main.model.repositories.CaptchaRepository;
 import main.model.repositories.PostRepository;
@@ -27,10 +28,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -103,7 +102,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (user == null) {
             log.warn("--- Ошибка! Пользователь с таким E-mail: " + email + " не существует");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь с таким E-mail: "
+                    new BadRequestMessageResponse("Пользователь с таким E-mail: "
                             + email + " не существует"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -115,7 +114,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         } else {
             log.warn("--- Ошибка! Пароль введен неверно");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пароль введен не верно"),
+                    new BadRequestMessageResponse("Пароль введен не верно"),
                     HttpStatus.BAD_REQUEST);
         }
     }
@@ -137,14 +136,14 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (!isEmailValid(email)) {
             log.warn("--- Ошибка! Вы указали неверный E-mail: " + email);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Ошибка! Вы указали неверный E-mail: " + email),
+                    new BadRequestMessageResponse("Ошибка! Вы указали неверный E-mail: " + email),
                     HttpStatus.BAD_REQUEST);
         }
         User user = userRepository.getUserByEmail(email);
         if (user == null) {
             log.warn("--- Ошибка! Пользователь с таким E-mail: " + email + " не существует");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь с таким E-mail: "
+                    new BadRequestMessageResponse("Пользователь с таким E-mail: "
                             + email + " не существует"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -170,7 +169,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
                 code.isBlank() || password.isBlank() || captcha.isBlank() || captchaSecret.isBlank()) {
             log.warn("--- Введены не все требуемые параметры: " + "{code:" + code + ", password:" + password + "," +
                     "captcha:" + captcha + ", captchaSecret:" + captchaSecret + "}");
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     code == null || code.isBlank() ? "Не указан код восстановления" : "",
                     password == null || password.isBlank() ? "Не введен пароль" : "",
                     captcha == null || captcha.isBlank() ? "Не введен текст с картинки" : "",
@@ -183,7 +182,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         boolean isCaptchaCodeValid = isCaptchaValid(captcha, captchaSecret);
         if (!isCodeValid || !isPassValid || !isCaptchaCodeValid) {
             ResponseEntity<ResponseApi> response = new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse(
+                    new BadRequestMessageResponse(
                             !isCodeValid ? "Неверный код восстановления" : "",
                             !isPassValid ? "Пароль не соответствует требованиям" : "",
                             !isCaptchaCodeValid ? "Капча введена неверно" : ""),
@@ -204,7 +203,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         String email = registerRequest.getEmail();
         if (email == null || email.isBlank()) {
             log.warn("--- В регистрационную форму введен пустой Email");
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     email == null || email.isBlank() ? "Введен пустой email" : ""),
                     HttpStatus.BAD_REQUEST);
         }
@@ -217,7 +216,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
                 || password.isBlank() || captcha.isBlank() || captchaSecret.isBlank()) {
             log.warn("--- Введены не все требуемые параметры: " + "{name:" + name + ", password:" + password + "," +
                     "captcha:" + captcha + ", captchaSecret:" + captchaSecret + "}");
-            return new ResponseEntity<>(new BadRequestMsgWithErrorsResponse(
+            return new ResponseEntity<>(new BadRequestMessageResponse(
                     name.isBlank() ? "Передано пустое имя" : "",
                     password == null || password.isBlank() ? "Не введен пароль" : "",
                     captcha == null || captcha.isBlank() ? "Не введен текст с картинки" : "",
@@ -232,7 +231,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         boolean isPassValid = isPasswordValid(password);
         if (!isNameValid || !isPassValid || !isCaptchaCodeValid || !isEmailValid) {
             ResponseEntity<ResponseApi> response = new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse(
+                    new BadRequestMessageResponse(
                             !isNameValid ? "Пользователь с таким именем уже существует" : "",
                             !isPassValid ? "Пароль не соответствует требованиям" : "",
                             !isCaptchaCodeValid ? "Капча введена неверно" : "",
@@ -263,29 +262,33 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
 
         boolean isAnotherUserExistsByEmail = false;
-        boolean isNameValid = true;
-        boolean isEmailValid = true;
-        boolean isPassValid = true;
+        boolean isNameValid;
+        boolean isEmailValid;
+        boolean isPassValid;
         boolean isPhotoValid = true;
         if (password != null && !password.isBlank()) {
             isPassValid = isPasswordValid(password);
             String hashedPassword = getHashedString(password);
             if (isPassValid) user.setHashedPassword(hashedPassword);
-        }
+        } else isPassValid = true;
         if (name != null && !name.isBlank() && !name.equals(user.getName())) {
             isNameValid = (userRepository.getUserByName(name) == null);
             if (isNameValid) user.setName(name);
+        } else {
+            isNameValid = true;
         }
         if (email != null && !email.isBlank() && !email.equalsIgnoreCase(user.getEmail())) {
             isAnotherUserExistsByEmail = !email.equalsIgnoreCase(user.getEmail()) &&
                     userRepository.getUserByEmail(email.toLowerCase()) != null;
             isEmailValid = (!isAnotherUserExistsByEmail && isEmailValid(email));
             if (isEmailValid) user.setEmail(email);
+        } else {
+            isEmailValid = true;
         }
         if (removePhoto != null && removePhoto == 1) {
             String currentPhoto = user.getPhoto();
@@ -296,11 +299,9 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (editProfileRequest instanceof EditProfileWithPhotoRequest) { // Если переданный запрос содержит фото
             MultipartFile photo = ((EditProfileWithPhotoRequest) editProfileRequest).getPhoto();
             if (photo != null) {
-                if (photo.getSize() > maxPhotoSizeInBytes && photo.getSize() < 0) {
+                if (photo.getSize() > maxPhotoSizeInBytes || photo.getSize() < 0) {
                     isPhotoValid = false;
-                } else if (photo.getSize() == 0) {
-                    isPhotoValid = true;
-                } else {
+                } else if (photo.getSize() > 0 && photo.getSize() <= maxPhotoSizeInBytes) {
                     // Если у юзера уже есть фото, удаляем его
                     if (user.getPhoto() != null) fileSystemService.deleteFileByPath(user.getPhoto());
                     String directoryPath = getDirectoryToUpload();          // папка для загрузки нового фото
@@ -318,27 +319,30 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
                             e.printStackTrace();
                         }
                     }
-                }
-            }
+                } else isPhotoValid = false;
+            } else isPhotoValid = false;
         }
 
         if (!isNameValid || !isPassValid || !isEmailValid || !isPhotoValid) {
             ResponseEntity<ResponseApi> response = new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse(
-                            !isNameValid ? "Имя не введено или пользователь с таким именем уже существует" : "",
-                            !isPassValid ? "Пароль не введене или не соответствует требованиям" : "",
-                            !isPhotoValid ? "Размер фото не соответствует ограничению "
+                    new BadRequestMessageResponse(
+                            !isNameValid ? "Пользователь с таким именем уже существует" : "",
+                            !isPassValid ? "Пароль не соответствует требованиям: введите не менее 6 символов" : "",
+                            !isPhotoValid ? "Размер файла не соответствует ограничению "
                                     + (int) (maxPhotoSizeInBytes / 1024) + " кБ" : "",
-                            !isEmailValid(email) ? "Email не соответствует требованиям" : "",
-                            email == null || email.isBlank() ? "" : (!isAnotherUserExistsByEmail
-                                    ? "Пользователь с таким Email уже зарегистрирован" : "")),
+                            email != null && !email.isBlank() ? (
+                                    List.of((!isEmailValid(email) ? "Email не соответствует требованиям" : ""),
+                                            (isAnotherUserExistsByEmail ? "Пользователь с таким Email уже зарегистрирован" : ""))
+                                            .stream()
+                                            .filter(s -> (s != null && !s.isBlank()))
+                                            .collect(Collectors.joining(". "))) : ""),
                     HttpStatus.BAD_REQUEST);
             log.warn("--- Направляется ответ: {" + "HttpStatus:" + response.getStatusCode() +
                     "," + response.getBody() + "}");
             return response;
         }
         userRepository.save(user);
-        log.info("--- Профиль пользователя с id:" + user.getId() + " успещно отредактирован");
+        log.info("--- Профиль пользователя с id:" + user.getId() + " успешно отредактирован");
         return new ResponseEntity<>(new BooleanResponse(true), HttpStatus.OK);
     }
 
@@ -348,11 +352,14 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
         LocalDateTime firstPostTime = null;
-        Set<Post> myPosts = user.getPosts();
+        Set<Post> myPosts = user.getPosts().stream()
+                .filter(p -> p.getModerationStatus().equals(ModerationStatus.ACCEPTED) &&
+                        p.isActive() && p.getTime().isBefore(LocalDateTime.now()))
+                .collect(Collectors.toSet());
         int postsCount = myPosts.size();
         int allLikesCount = 0;
         int allDislikeCount = 0;
@@ -398,7 +405,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
             log.warn("--- Ошибка! Отсутствует сессия, пользователь не авторизован и " +
                     "просмотр статистики незарегистрированными пользователями запрещен");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован, показ" +
+                    new BadRequestMessageResponse("Пользователь не авторизован, показ" +
                             " статистики неавторизованным пользователям запрещен"),
                     HttpStatus.BAD_REQUEST);
         }
@@ -465,7 +472,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
     private String getRandomImageName() {
         String randomHash = getHashedString(String.valueOf(Math.pow(Math.random(), 100 * Math.random())));
         String res = randomHash + "." + imageFormat; // имя файла задаем хэшем
-        log.info("--- Получена случаной имя файла: " + res);
+        log.info("--- Получено случаное имя файла: " + res);
         return res;
     }
 
@@ -503,7 +510,7 @@ public class UserRepositoryServiceImpl implements UserRepositoryService {
         } else {        // "Ошибка! Пользователь найден в сессиях, однако отсутствует в БД!";
             log.warn("--- Ошибка! Отсутствует сессия, пользователь не авторизован");
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
     }

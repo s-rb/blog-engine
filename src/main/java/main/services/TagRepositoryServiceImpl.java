@@ -44,12 +44,6 @@ public class TagRepositoryServiceImpl implements TagRepositoryService {
     }
 
     @Override
-    public void deleteTag(Tag tag) {
-        tagRepository.delete(tag);
-        log.info("--- Удален тэг: " + tag.getName());
-    }
-
-    @Override
     public ResponseEntity<ResponseApi> getTagsWithoutQuery() {
         List<Tag> allTags = tagRepository.getAllTagsListSortedByIdDesc();
         return getResponseEntityByTagsList(allTags);

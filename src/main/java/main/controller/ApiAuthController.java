@@ -2,8 +2,8 @@ package main.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import main.api.request.ChangePasswordRequest;
-import main.api.request.RegisterRequest;
 import main.api.request.LoginRequest;
+import main.api.request.RegisterRequest;
 import main.api.request.RestorePassRequest;
 import main.api.response.ResponseApi;
 import main.services.interfaces.CaptchaRepositoryService;

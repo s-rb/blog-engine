@@ -1,0 +1,153 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: TagRepositoryServiceImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.services</a> ]
+</div>
+
+<h1>Coverage Summary for Class: TagRepositoryServiceImpl (main.services)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TagRepositoryServiceImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92,9%
+  </span>
+  <span class="absValue">
+    (26/ 28)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.services;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import lombok.extern.slf4j.Slf4j;
+<i>4</i>&nbsp;import main.api.response.GetTagsResponse;
+<i>5</i>&nbsp;import main.api.response.ResponseApi;
+<i>6</i>&nbsp;import main.model.entities.Tag;
+<i>7</i>&nbsp;import main.model.repositories.TagRepository;
+<i>8</i>&nbsp;import main.services.interfaces.TagRepositoryService;
+<i>9</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i>10</i>&nbsp;import org.springframework.http.HttpStatus;
+<i>11</i>&nbsp;import org.springframework.http.ResponseEntity;
+<i>12</i>&nbsp;import org.springframework.stereotype.Service;
+<i>13</i>&nbsp;
+<i>14</i>&nbsp;import java.util.HashMap;
+<i>15</i>&nbsp;import java.util.List;
+<i>16</i>&nbsp;
+<b class="fc"><i>17</i>&nbsp;@Slf4j</b>
+<i>18</i>&nbsp;@Service
+<b class="fc"><i>19</i>&nbsp;public class TagRepositoryServiceImpl implements TagRepositoryService {</b>
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    @Autowired
+<i>22</i>&nbsp;    private TagRepository tagRepository;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    @Override
+<i>25</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; getTags(String query) {
+<b class="fc"><i>26</i>&nbsp;        if (query == null || query.equals(&quot;&quot;) || query.isBlank()) {</b>
+<b class="fc"><i>27</i>&nbsp;            return getTagsWithoutQuery();</b>
+<i>28</i>&nbsp;        } else {
+<b class="fc"><i>29</i>&nbsp;            List&lt;Tag&gt; queriedTags = tagRepository.getAllTagsListByQuerySortedByIdDesc(query);</b>
+<b class="fc"><i>30</i>&nbsp;            return getResponseEntityByTagsList(queriedTags);</b>
+<i>31</i>&nbsp;        }
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    @Override
+<i>35</i>&nbsp;    public Tag addTag(Tag tag) {
+<b class="fc"><i>36</i>&nbsp;        if (tag == null) {</b>
+<b class="nc"><i>37</i>&nbsp;            log.warn(&quot;--- Для добавления в репозиторий передан пустой тэг&quot;);</b>
+<b class="nc"><i>38</i>&nbsp;            return null;</b>
+<i>39</i>&nbsp;        } else {
+<b class="fc"><i>40</i>&nbsp;            Tag newTag = tagRepository.save(tag);</b>
+<b class="fc"><i>41</i>&nbsp;            log.info(&quot;--- Добавлен тэг: {id:&quot; + newTag.getId() + &quot;, name:&quot; + newTag.getName() + &quot;}&quot;);</b>
+<b class="fc"><i>42</i>&nbsp;            return newTag;</b>
+<i>43</i>&nbsp;        }
+<i>44</i>&nbsp;    }
+<i>45</i>&nbsp;
+<i>46</i>&nbsp;    @Override
+<i>47</i>&nbsp;    public ResponseEntity&lt;ResponseApi&gt; getTagsWithoutQuery() {
+<b class="fc"><i>48</i>&nbsp;        List&lt;Tag&gt; allTags = tagRepository.getAllTagsListSortedByIdDesc();</b>
+<b class="fc"><i>49</i>&nbsp;        return getResponseEntityByTagsList(allTags);</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    private ResponseEntity&lt;ResponseApi&gt; getResponseEntityByTagsList(List&lt;Tag&gt; allTags) {
+<b class="fc"><i>53</i>&nbsp;        HashMap&lt;String, Double&gt; queryTagsMap = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>54</i>&nbsp;        if (!allTags.isEmpty()) {</b>
+<b class="fc"><i>55</i>&nbsp;            Integer mostFrequentTagCount = tagRepository.getMaxTagCount();</b>
+<b class="fc"><i>56</i>&nbsp;            for (Tag tag : allTags) {</b>
+<b class="fc"><i>57</i>&nbsp;                Double weight = ((double) tagRepository.getTagCountByTagId(tag.getId()) / (double) mostFrequentTagCount);</b>
+<b class="fc"><i>58</i>&nbsp;                queryTagsMap.put(tag.getName(), weight);</b>
+<b class="fc"><i>59</i>&nbsp;            }</b>
+<b class="fc"><i>60</i>&nbsp;            ResponseEntity&lt;ResponseApi&gt; response = new ResponseEntity&lt;&gt;(new GetTagsResponse(queryTagsMap), HttpStatus.OK);</b>
+<b class="fc"><i>61</i>&nbsp;            log.info(&quot;--- Направляется ответ &quot; + (response.getBody() == null ? &quot;с пустым телом&quot;</b>
+<b class="fc"><i>62</i>&nbsp;                    : &quot;с тегами: &quot; + response.getBody().toString()));</b>
+<b class="fc"><i>63</i>&nbsp;            return response;</b>
+<i>64</i>&nbsp;        } else {
+<b class="fc"><i>65</i>&nbsp;            ResponseEntity&lt;ResponseApi&gt; response = ResponseEntity.status(HttpStatus.OK).body(null);</b>
+<b class="fc"><i>66</i>&nbsp;            log.info(&quot;--- Теги отсутствуют&quot;);</b>
+<b class="fc"><i>67</i>&nbsp;            return response;</b>
+<i>68</i>&nbsp;        }
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,117 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BadRequestMessageResponse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.api.response</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BadRequestMessageResponse (main.api.response)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BadRequestMessageResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (4/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (8/ 12)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.api.response;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.Arrays;
+<i>4</i>&nbsp;import java.util.stream.Collectors;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;public class BadRequestMessageResponse implements ResponseApi {
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;    private boolean result;
+<i>9</i>&nbsp;    private String message;
+<i>10</i>&nbsp;
+<b class="fc"><i>11</i>&nbsp;    public BadRequestMessageResponse(String... args) {</b>
+<b class="fc"><i>12</i>&nbsp;        result = false;</b>
+<b class="fc"><i>13</i>&nbsp;        message = Arrays.stream(args).filter(s -&gt;</b>
+<b class="fc"><i>14</i>&nbsp;                (s != null &amp;&amp; !s.isBlank()) &amp;&amp; !s.equalsIgnoreCase(&quot;&quot;))</b>
+<b class="fc"><i>15</i>&nbsp;                .collect(Collectors.joining(&quot;. &quot;));</b>
+<i>16</i>&nbsp;//                String.join(&quot;. &quot;, args);
+<b class="fc"><i>17</i>&nbsp;    }</b>
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    public String getMessage() {
+<b class="fc"><i>20</i>&nbsp;        return message;</b>
+<i>21</i>&nbsp;    }
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    public void setMessage(String message) {
+<b class="nc"><i>24</i>&nbsp;        this.message = message;</b>
+<b class="nc"><i>25</i>&nbsp;    }</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public boolean isResult() {
+<b class="fc"><i>28</i>&nbsp;        return result;</b>
+<i>29</i>&nbsp;    }
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;    public void setResult(boolean result) {
+<b class="nc"><i>32</i>&nbsp;        this.result = result;</b>
+<b class="nc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>

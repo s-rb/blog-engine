@@ -2,7 +2,7 @@ package main.services;
 
 import lombok.extern.slf4j.Slf4j;
 import main.api.request.PostVoteRequest;
-import main.api.response.BadRequestMsgWithErrorsResponse;
+import main.api.response.BadRequestMessageResponse;
 import main.api.response.BooleanResponse;
 import main.api.response.ResponseApi;
 import main.model.entities.Post;
@@ -49,7 +49,7 @@ public class PostVoteRepositoryServiceImpl implements PostVoteRepositoryService 
         if (user == null) {
             log.warn("--- Не найден пользователь по номеру сессии: " + session.getId());
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пользователь не авторизован"),
+                    new BadRequestMessageResponse("Пользователь не авторизован"),
                     HttpStatus.BAD_REQUEST);
         }
         ResponseEntity<ResponseApi> response =
@@ -58,28 +58,24 @@ public class PostVoteRepositoryServiceImpl implements PostVoteRepositoryService 
         if (currentPost == null) {
             log.warn("--- Не найден пост с id: " + postId);
             return new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Пост не найден"),
+                    new BadRequestMessageResponse("Пост не найден"),
                     HttpStatus.BAD_REQUEST);
         }
         // проверяем лайкал/дизлайкал ли юзер ранее этот пост
         PostVote beforeLike = postVoteRepository.getPostVoteByUserIdAndPostId(postId, user.getId());
-        if (beforeLike == null)
-        { // Не было лайков и диз
+        if (beforeLike == null) { // Не было лайков и диз
             PostVote newPostVote = postVoteRepository
                     .save(new PostVote(user, currentPost, LocalDateTime.now(), (byte) (isLike ? 1 : -1)));
             log.info("--- Создан postVote поста с id:" + postId + ", пользователем с id:" + user.getId() +
                     ", postVoteID:" + newPostVote.getId() + ", postVoteValue: " + newPostVote.getValue());
             response = new ResponseEntity<>(new BooleanResponse(true), HttpStatus.OK);
-        }
-        else if (beforeLike.getValue() == (isLike ? 1 : -1))
-        { // Ранее был лайк
+        } else if (beforeLike.getValue() == (isLike ? 1 : -1)) { // Ранее был лайк
             log.info("--- Повторный лайк/дизлайк поста с id:" + postId + ", пользователем с id:" + user.getId());
             response = new ResponseEntity<>(
-                    new BadRequestMsgWithErrorsResponse("Повторный лайк/дизлайк"),
+                    new BadRequestMessageResponse("Повторный лайк/дизлайк"),
                     HttpStatus.BAD_REQUEST);
-        }
-        else if (beforeLike.getValue() == (isLike ? -1 : 1))
-        { // ранее был противоположный postVote, удаляем
+        } else if (beforeLike.getValue() == (isLike ? -1 : 1)) { // ранее был противоположный postVote, удаляем
+            currentPost.getPostVotes().remove(beforeLike);
             postVoteRepository.delete(beforeLike);
             log.info("--- Удален лайк/дизлайк поста с id:" + postId + ", пользователем с id:" + user.getId());
             // Для создания нового лайка/дизлайка, а не только удаления (для синхр. с фронтом, а не док.API):

@@ -1,0 +1,184 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: GetGlobalSettingsResponse</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">main.api.response</a> ]
+</div>
+
+<h1>Coverage Summary for Class: GetGlobalSettingsResponse (main.api.response)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">GetGlobalSettingsResponse</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63,6%
+  </span>
+  <span class="absValue">
+    (7/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74,4%
+  </span>
+  <span class="absValue">
+    (29/ 39)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package main.api.response;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.fasterxml.jackson.annotation.JsonProperty;
+<i>4</i>&nbsp;import main.model.entities.GlobalSettings;
+<i>5</i>&nbsp;import main.services.interfaces.GlobalSettingsRepositoryService;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.util.Map;
+<i>8</i>&nbsp;import java.util.Set;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;public class GetGlobalSettingsResponse implements ResponseApi {
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    @JsonProperty(GlobalSettingsRepositoryService.MULTIUSER_MODE)
+<i>13</i>&nbsp;    private Boolean multiuserMode;
+<i>14</i>&nbsp;    @JsonProperty(GlobalSettingsRepositoryService.POST_PREMODERATION)
+<i>15</i>&nbsp;    private Boolean postPremoderation;
+<i>16</i>&nbsp;    @JsonProperty(GlobalSettingsRepositoryService.STATISTICS_IS_PUBLIC)
+<i>17</i>&nbsp;    private Boolean statisticsIsPublic;
+<i>18</i>&nbsp;
+<b class="fc"><i>19</i>&nbsp;    public GetGlobalSettingsResponse(Map&lt;String, Boolean&gt; settings) {</b>
+<b class="fc"><i>20</i>&nbsp;        for (String key : settings.keySet()) {</b>
+<b class="fc"><i>21</i>&nbsp;            switch (key) {</b>
+<i>22</i>&nbsp;                case (GlobalSettingsRepositoryService.MULTIUSER_MODE):
+<b class="fc"><i>23</i>&nbsp;                    multiuserMode = settings.get(GlobalSettingsRepositoryService.MULTIUSER_MODE);</b>
+<b class="fc"><i>24</i>&nbsp;                    break;</b>
+<i>25</i>&nbsp;                case (GlobalSettingsRepositoryService.POST_PREMODERATION):
+<b class="fc"><i>26</i>&nbsp;                    postPremoderation = settings.get(GlobalSettingsRepositoryService.POST_PREMODERATION);</b>
+<b class="fc"><i>27</i>&nbsp;                    break;</b>
+<i>28</i>&nbsp;                case (GlobalSettingsRepositoryService.STATISTICS_IS_PUBLIC):
+<b class="fc"><i>29</i>&nbsp;                    statisticsIsPublic = settings.get(GlobalSettingsRepositoryService.STATISTICS_IS_PUBLIC);</b>
+<i>30</i>&nbsp;                    break;
+<i>31</i>&nbsp;            }
+<b class="fc"><i>32</i>&nbsp;        }</b>
+<b class="fc"><i>33</i>&nbsp;    }</b>
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;    public GetGlobalSettingsResponse(Set&lt;GlobalSettings&gt; settings) {</b>
+<b class="fc"><i>36</i>&nbsp;        for (GlobalSettings g : settings) {</b>
+<b class="fc"><i>37</i>&nbsp;            String settingName = g.getCode().toUpperCase();</b>
+<b class="fc"><i>38</i>&nbsp;            switch (settingName) {</b>
+<i>39</i>&nbsp;                case GlobalSettingsRepositoryService.MULTIUSER_MODE: {
+<b class="fc"><i>40</i>&nbsp;                    multiuserMode = yesOrNoToBoolean(g.getValue());</b>
+<b class="fc"><i>41</i>&nbsp;                    break;</b>
+<i>42</i>&nbsp;                }
+<i>43</i>&nbsp;                case GlobalSettingsRepositoryService.POST_PREMODERATION: {
+<b class="fc"><i>44</i>&nbsp;                    postPremoderation = yesOrNoToBoolean(g.getValue());</b>
+<b class="fc"><i>45</i>&nbsp;                    break;</b>
+<i>46</i>&nbsp;                }
+<i>47</i>&nbsp;                case GlobalSettingsRepositoryService.STATISTICS_IS_PUBLIC: {
+<b class="fc"><i>48</i>&nbsp;                    statisticsIsPublic = yesOrNoToBoolean(g.getValue());</b>
+<i>49</i>&nbsp;                    break;
+<i>50</i>&nbsp;                }
+<i>51</i>&nbsp;            }
+<b class="fc"><i>52</i>&nbsp;        }</b>
+<b class="fc"><i>53</i>&nbsp;    }</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    public Boolean getMultiuserMode() {
+<b class="fc"><i>56</i>&nbsp;        return multiuserMode;</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    public void setMultiuserMode(Boolean multiuserMode) {
+<b class="nc"><i>60</i>&nbsp;        this.multiuserMode = multiuserMode;</b>
+<b class="nc"><i>61</i>&nbsp;    }</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;    public Boolean getPostPremoderation() {
+<b class="fc"><i>64</i>&nbsp;        return postPremoderation;</b>
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    public void setPostPremoderation(Boolean postPremoderation) {
+<b class="nc"><i>68</i>&nbsp;        this.postPremoderation = postPremoderation;</b>
+<b class="nc"><i>69</i>&nbsp;    }</b>
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    public Boolean getStatisticsIsPublic() {
+<b class="fc"><i>72</i>&nbsp;        return statisticsIsPublic;</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    public void setStatisticsIsPublic(Boolean statisticsIsPublic) {
+<b class="nc"><i>76</i>&nbsp;        this.statisticsIsPublic = statisticsIsPublic;</b>
+<b class="nc"><i>77</i>&nbsp;    }</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;    private String booleanToYesOrNo(boolean bool) {
+<b class="nc"><i>80</i>&nbsp;        if (bool) {</b>
+<b class="nc"><i>81</i>&nbsp;            return &quot;YES&quot;;</b>
+<b class="nc"><i>82</i>&nbsp;        } else return &quot;NO&quot;;</b>
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    private Boolean yesOrNoToBoolean(String yesOrNo) {
+<b class="fc"><i>86</i>&nbsp;        if (yesOrNo.toUpperCase().equals(&quot;YES&quot;)) {</b>
+<b class="fc"><i>87</i>&nbsp;            return true;</b>
+<b class="fc"><i>88</i>&nbsp;        } else if (yesOrNo.toUpperCase().equals(&quot;NO&quot;)) {</b>
+<b class="fc"><i>89</i>&nbsp;            return false;</b>
+<b class="nc"><i>90</i>&nbsp;        } else return null;</b>
+<i>91</i>&nbsp;    }
+<i>92</i>&nbsp;
+<i>93</i>&nbsp;    @Override
+<i>94</i>&nbsp;    public String toString() {
+<b class="fc"><i>95</i>&nbsp;        return &quot;Settings{&quot; +</b>
+<i>96</i>&nbsp;                &quot;multiuserMode=&quot; + multiuserMode +
+<i>97</i>&nbsp;                &quot;, postPremoderation=&quot; + postPremoderation +
+<i>98</i>&nbsp;                &quot;, statisticsIsPublic=&quot; + statisticsIsPublic +
+<i>99</i>&nbsp;                &#39;}&#39;;
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-04-20 19:52</div>
+</div>
+</body>
+</html>
