@@ -26,14 +26,14 @@ Java-based backend for a blog.
 
 Application is RESTful.
 
-![Изображение фронтэнда](images/Rest.png)
+![Схема REST](images/Rest.png)
 
 
 Designed with pattern MVC.
 
-![Изображение фронтэнда](images/MVC.png)
+![Схема MVC](images/MVC.png)
 
 
 Code covered by tests for 75% lines.
 
-![Изображение фронтэнда](images/Junit.png)
+![Скрин JUnit](images/Junit.png)
