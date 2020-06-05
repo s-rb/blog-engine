@@ -1,12 +1,12 @@
 # Blog Engine Backend
 
-The final work at Skillbox's course "Java-developer".
+The final work at Skillbох's course "Java-developer".
 
 Java-based backend for a blog.
 
 ![Изображение фронтэнда](images/FrontEnd.png)
 
-##Main technologies:
+## Main technologies:
 * Java11
 * Apache Maven
 * Spring Framework (Using Spring Boot project)
