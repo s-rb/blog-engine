@@ -78,8 +78,8 @@ public class NotLoginnedApiGeneralControllerTest {
 
     @Test
     public void testGetGeneralData() throws Exception {
-        String subtitle = "Рассказы разработчиков";
-        String copyright = "Дмитрий Сергеев";
+        String subtitle = "Developers's tales";
+        String copyright = "Roman Surkov";
         ObjectMapper mapper = new ObjectMapper();
         GetGeneralDataResponse response = new GetGeneralDataResponse(
                 title, subtitle, phone, email, copyright, copyrightFrom);

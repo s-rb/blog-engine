@@ -4,6 +4,9 @@
 
 The final work at Skillbох's course "Java-developer".
 
+Docker command to start mysql in docker 
+`docker run --name mysql8 -p 3306:3306 -e MYSQL_ROOT_PASSWORD=mypassword -e MYSQL_PASSWORD=mypassword -e MYSQL_DATABASE=testblogdb -e MYSQL_USER=blogadmin  -v ~/data/docker/volumes/mysql8:/var/lib/mysql -d mysql:8`
+
 Java-based backend for a blog.
 
 ![Изображение фронтэнда](images/FrontEnd.png)
