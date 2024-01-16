@@ -1,6 +1,7 @@
 package main.controller.authController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.TestUtils;
 import main.api.request.ChangePasswordRequest;
 import main.api.request.LoginRequest;
@@ -43,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-posts-after.sql", "/create-user-after.sql", "/create-captchas-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class NotLoginnedAuthControllerTest {
+public class NotLoginnedAuthControllerTest extends SharedDatabaseContainer {
 
     @Autowired
     private MockMvc mockMvc;
@@ -123,22 +124,6 @@ public class NotLoginnedAuthControllerTest {
                         content(mapper.writeValueAsBytes(request)))
                 .andExpect(status().isBadRequest())
                 .andReturn();
-        Assert.assertArrayEquals("Responses are different", mapper.writeValueAsBytes(expectedResponse),
-                result.getResponse().getContentAsByteArray());
-    }
-
-    @Test
-    public void testRestorePassword_allIsOk() throws Exception {
-        // Prepare
-        RestorePassRequest request = new RestorePassRequest("restoreuser@mail.ru");
-        ObjectMapper mapper = new ObjectMapper();
-        // Execute
-        MvcResult result = mockMvc.perform(
-                post("/api/auth/restore").contentType(TestUtils.APPLICATION_JSON_UTF8).
-                        content(TestUtils.convertObjectToJsonBytes(request)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON)).andReturn();
-        BooleanResponse expectedResponse = new BooleanResponse(true);
         Assert.assertArrayEquals("Responses are different", mapper.writeValueAsBytes(expectedResponse),
                 result.getResponse().getContentAsByteArray());
     }

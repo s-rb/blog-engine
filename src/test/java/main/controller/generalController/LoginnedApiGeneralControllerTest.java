@@ -1,6 +1,7 @@
 package main.controller.generalController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.TestUtils;
 import main.api.request.*;
 import main.api.response.*;
@@ -44,7 +45,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
 @Sql(value = {"/create-settings-after.sql", "/create-postvotes-after.sql", "/create-comments-after.sql",
         "/create-posts-after.sql", "/create-user-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class LoginnedApiGeneralControllerTest {
+public class LoginnedApiGeneralControllerTest extends SharedDatabaseContainer {
 
     private static final String ADD_COMMENT_URL = "/api/comment";
     private static final String EXISTED_MODERATOR_EMAIL = "mail@mail.ru";

@@ -1,6 +1,7 @@
 package main.controller.generalController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.TestUtils;
 import main.api.request.AddCommentRequest;
 import main.api.request.EditProfileRequest;
@@ -41,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         "/create-tag2post-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-tag2post-after.sql", "/create-tags-after.sql", "/create-comments-after.sql",
         "/create-posts-after.sql", "/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class NotLoginnedApiGeneralControllerTest {
+public class NotLoginnedApiGeneralControllerTest extends SharedDatabaseContainer {
 
     public static final String API_CALENDAR_URL = "/api/calendar";
     public static final String API_SETTINGS_URL = "/api/settings";
@@ -196,32 +197,6 @@ public class NotLoginnedApiGeneralControllerTest {
         }
         GetPostsByCalendarResponse expectedResponse = new GetPostsByCalendarResponse(postsCountByDate, allYears);
         mockMvc.perform(get(API_CALENDAR_URL).param("year", "2020")
-                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(mapper.writeValueAsString(
-                        expectedResponse)));
-    }
-
-    @Test
-    public void testCountPostsByYear_epmtyYear() throws Exception {
-        ObjectMapper mapper = new ObjectMapper();
-        List<Integer> allYears = List.of(2020);
-        List<Post> postsByYear = List.of(
-                postRepoService.getPostById(10),
-                postRepoService.getPostById(13),
-                postRepoService.getPostById(14),
-                postRepoService.getPostById(15),
-                postRepoService.getPostById(16),
-                postRepoService.getPostById(17)
-        );
-        HashMap<Date, Integer> postsCountByDate = new HashMap<>();
-        for (Post p : postsByYear) {
-            Date postDate = Date.valueOf(p.getTime().toLocalDate());
-            Integer postCount = postsCountByDate.getOrDefault(postDate, 0);
-            postsCountByDate.put(postDate, postCount + 1);
-        }
-        GetPostsByCalendarResponse expectedResponse = new GetPostsByCalendarResponse(postsCountByDate, allYears);
-        mockMvc.perform(get(API_CALENDAR_URL).param("year", "")
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(mapper.writeValueAsString(

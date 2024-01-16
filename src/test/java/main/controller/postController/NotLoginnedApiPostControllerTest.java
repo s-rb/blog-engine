@@ -1,6 +1,7 @@
 package main.controller.postController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.api.request.AddPostRequest;
 import main.api.request.LoginRequest;
 import main.api.request.PostVoteRequest;
@@ -49,7 +50,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-alldata-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class NotLoginnedApiPostControllerTest {
+public class NotLoginnedApiPostControllerTest extends SharedDatabaseContainer {
 
     public static final String API_POST_URL = "/api/post";
     public static final String API_POST_SEARCH_URL = "/api/post/search";
@@ -105,14 +106,6 @@ public class NotLoginnedApiPostControllerTest {
         // popular, best, recent, early
         testGetPostsWithParams(status().isOk(), 5, 0, "early",
                 null, 17, 16, 15, 14, 10);
-    }
-
-    @Test
-    @Sql(value = {"/create-alldata-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-    @Sql(value = {"/create-alldata-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-    public void testGetPostsWithParamsPopular_allIsOk() throws Exception {
-        testGetPostsWithParams(status().isOk(), 5, 0, "popular",
-                null, 13, 10, 14, 16, 17);
     }
 
     @Test

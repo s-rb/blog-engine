@@ -1,15 +1,15 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://host:port/testdbname?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:${CLEARDB_DATABASE_URL:mysql://localhost:3306/blogdb?useLegacyDatetimeCode=false}
     useJDBCCompliantTimeZoneShift: true
     serverTimezone: Asia/Tokyo
-    username: username
-    password: password
+    username: root
+    password: testtest
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: create-drop # First create => then validate
+      ddl-auto: validate # First create => then validate
     properties:
       hibernate:
         jdbc:
@@ -35,7 +35,7 @@ spring:
             enable: true
         debug: true
 server:
-  port: 8080
+  port: ${PORT:8080}
 captcha:
   delete_timeout: 60 # min
   random_secret_key_length: 22

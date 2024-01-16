@@ -1,5 +1,6 @@
 package main.controller.fileController;
 
+import main.SharedDatabaseContainer;
 import main.controller.FileController;
 import main.services.interfaces.FileSystemService;
 import org.junit.Assert;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class FileControllerTest {
+public class FileControllerTest extends SharedDatabaseContainer {
 
     @Autowired
     private MockMvc mockMvc;

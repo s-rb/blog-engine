@@ -1,5 +1,6 @@
 package main.controller.defaultController;
 
+import main.SharedDatabaseContainer;
 import main.controller.DefaultController;
 import org.junit.After;
 import org.junit.Before;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class DefaultControllerTest {
+public class DefaultControllerTest extends SharedDatabaseContainer {
 
     private static final String INDEX_URL = "/";
     private static final String SOME_WRONG_URL = "/dcsd/sxcsa12";

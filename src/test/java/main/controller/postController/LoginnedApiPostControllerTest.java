@@ -1,6 +1,7 @@
 package main.controller.postController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.TestUtils;
 import main.api.request.AddPostRequest;
 import main.api.request.LoginRequest;
@@ -50,7 +51,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-alldata-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class LoginnedApiPostControllerTest {
+public class LoginnedApiPostControllerTest extends SharedDatabaseContainer {
 
     private static final String EXISTED_MODERATOR_EMAIL = "mail@mail.ru";
     private static final String EXISTED_MODERATOR_PASSWORD = "password";

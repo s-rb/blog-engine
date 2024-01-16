@@ -1,6 +1,7 @@
 package main.controller.authController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.SharedDatabaseContainer;
 import main.TestUtils;
 import main.api.request.LoginRequest;
 import main.api.response.BooleanResponse;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.setup.SharedHttpSessionConfig
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-posts-after.sql", "/create-user-after.sql", "/create-captchas-after.sql"},
         executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class LoginnedAuthControllerTest {
+public class LoginnedAuthControllerTest extends SharedDatabaseContainer {
 
     private MockMvc mockMvc;
     @Autowired
