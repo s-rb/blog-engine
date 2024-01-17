@@ -9,7 +9,7 @@ spring:
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: validate # First create => then validate
+      ddl-auto: create-drop # First create => then validate
     properties:
       hibernate:
         jdbc:
