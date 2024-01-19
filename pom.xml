@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>skillbox-java-course</groupId>
+    <groupId>surkoff.com</groupId>
     <artifactId>blog-engine</artifactId>
     <version>1.0</version>
 
@@ -80,6 +80,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.26</version> <!-- Используйте актуальную версию -->
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-mysql</artifactId>
+            <version>9.21.0</version>
         </dependency>
 
         <dependency>
