@@ -24,10 +24,10 @@ services:
       MYSQL_ROOT_PASSWORD: password
     restart: always
     networks:
-        - blogdb-net
+      - blogdb-net
     ports:
       - 3306:3306
     volumes:
-    - ~/data/docker/volumes/mysql8:/var/lib/mysql
+      - ~/data/docker/volumes/mysql8:/var/lib/mysql
 networks:
   blogdb-net:
