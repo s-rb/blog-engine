@@ -18,14 +18,11 @@ services:
   db:
     image: "mysql:8.0.35"
     restart: always
+    networks:
+        - blogdb-net
     ports:
       - 3306:3306
-    networks:
-      - blogdb-net
-    environment:
-      MYSQL_DATABASE: blogdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+    volumes:
+    - ~/data/docker/volumes/mysql8:/var/lib/mysql
 networks:
   blogdb-net:
