@@ -17,6 +17,11 @@ services:
 
   db:
     image: "mysql:8.0.35"
+    environment:
+      MYSQL_DATABASE: testblogdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
     restart: always
     networks:
         - blogdb-net
