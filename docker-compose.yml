@@ -23,11 +23,25 @@ services:
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: password
     restart: always
-    networks:
-      - blogdb-net
     ports:
       - 3306:3306
+    networks:
+      - blogdb-net
     volumes:
       - ~/data/docker/volumes/mysql8:/var/lib/mysql
+
+  caddy:
+    image: "caddy"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    command: ["caddy", "reverse-proxy", "--from", "blog.surkoff.com", "--to", "service:8080"]
+
 networks:
   blogdb-net:
+volumes:
+  caddy_data:
+  caddy_config:
