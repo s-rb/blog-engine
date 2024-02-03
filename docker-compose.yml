@@ -1,4 +1,5 @@
 version: "3.7"
+
 services:
   service:
     build: .
@@ -29,5 +30,22 @@ services:
       - 3306:3306
     volumes:
       - ~/data/docker/volumes/mysql8:/var/lib/mysql
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /var/www/html:/var/www/html:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+#      - ./certbot-renew:/etc/cron.daily/certbot-renew
+#    command: certbot renew --webroot -w /var/www/html -d blog.surkoff.com -d www.blog.surkoff.com --agree-tos --no-eff-email --post-hook "docker-compose restart db"
+    command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email --staging -d blog.surkoff.com -d www.blog.surkoff.com
+#    depends_on:
+#      - db
+#    entrypoint: /bin/sh
+    networks:
+      - blogdb-net
+
 networks:
   blogdb-net:
