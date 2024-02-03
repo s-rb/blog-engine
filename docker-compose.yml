@@ -2,15 +2,19 @@ version: "3.7"
 
 services:
   service:
+    container_name: blog-app
     build: .
     restart: always
     ports:
       - 8082:8080
     networks:
-      - blogdb-net
+      - blog-net
     environment:
       - spring.datasource.url=jdbc:mysql://db:3306/blogdb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
       - spring.flyway.url=jdbc:mysql://db:3306/blogdb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+#      - SPRING_PROFILES_ACTIVE=https
+#      - SPRING_SSL_KEY_STORE=/etc/letsencrypt/live/blog.surkoff.com/privkey.pem
+#      - SPRING_SSL_TRUST_STORE=/etc/letsencrypt/live/blog.surkoff.com/fullchain.pem
     depends_on:
       - db
     volumes:
@@ -18,6 +22,7 @@ services:
 
   db:
     image: "mysql:8.0.35"
+    container_name: blog-db
     environment:
       MYSQL_DATABASE: testblogdb
       MYSQL_USER: admin
@@ -25,7 +30,7 @@ services:
       MYSQL_ROOT_PASSWORD: password
     restart: always
     networks:
-      - blogdb-net
+      - blog-net
     ports:
       - 3306:3306
     volumes:
@@ -33,9 +38,9 @@ services:
 
   certbot:
     image: certbot/certbot
-    container_name: certbot
+    container_name: blog-certbot
     volumes:
-      - /var/www/html:/var/www/html:ro
+      - /var/www/html:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/lib/letsencrypt:/var/lib/letsencrypt
 #      - ./certbot-renew:/etc/cron.daily/certbot-renew
@@ -45,7 +50,12 @@ services:
 #      - db
 #    entrypoint: /bin/sh
     networks:
-      - blogdb-net
+      - blog-net
+
+volumes:
+  - '/etc/letsencrypt'
+  - '/var/lib/letsencrypt'
+  - '/var/www/html'
 
 networks:
-  blogdb-net:
+  blog-net:
