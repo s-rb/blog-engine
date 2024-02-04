@@ -12,9 +12,6 @@ services:
     environment:
       - spring.datasource.url=jdbc:mysql://db:3306/blogdb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
       - spring.flyway.url=jdbc:mysql://db:3306/blogdb?characterEncoding=UTF-8&useUnicode=true&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
-#      - SPRING_PROFILES_ACTIVE=https
-#      - SPRING_SSL_KEY_STORE=/etc/letsencrypt/live/blog.surkoff.com/privkey.pem
-#      - SPRING_SSL_TRUST_STORE=/etc/letsencrypt/live/blog.surkoff.com/fullchain.pem
     depends_on:
       - db
     volumes:
@@ -43,12 +40,7 @@ services:
       - /var/www/html:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/lib/letsencrypt:/var/lib/letsencrypt
-#      - ./certbot-renew:/etc/cron.daily/certbot-renew
-#    command: certbot renew --webroot -w /var/www/html -d blog.surkoff.com -d www.blog.surkoff.com --agree-tos --no-eff-email --post-hook "docker-compose restart db"
     command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email --force-renewal -d blog.surkoff.com -d www.blog.surkoff.com
-#    depends_on:
-#      - db
-#    entrypoint: /bin/sh
     networks:
       - blog-net
 
