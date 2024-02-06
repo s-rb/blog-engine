@@ -16,6 +16,7 @@ services:
       - db
     volumes:
       - .m2:/root/.m2
+      - ~/data/docker/volumes/blog/images:/images
 
   db:
     image: "mysql:8.0.35"

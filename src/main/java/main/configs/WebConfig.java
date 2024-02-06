@@ -10,8 +10,9 @@ public class WebConfig implements WebMvcConfigurer {
     private static final String[] ALLOWED_METHODS = {"GET", "POST", "PUT", "DELETE"};
     private static final String[] ALLOWED_ORIGINS = {
             "http://localhost:3000",
-            "http://surkoff.com",
             "http://blog.surkoff.com",
+            "https://blog.surkoff.com",
+            "http://surkoff.com",
             "https://surkoff.com"
     };
 
