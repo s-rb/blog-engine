@@ -20,11 +20,11 @@ values (31, 'daney', '0pjkbqtfzehqo3p65pislx', NOW()),
 (32, 'fapey', 'cfgcftcraaz2xg5xlirlak', NOW());
 
 INSERT INTO users(id, email, password, is_moderator, name, reg_time)
-values (21, 'mail@mail.ru', '5F4DCC3B5AA765D61D8327DEB882CF99', 1, 'mail', NOW()),
-(22, 'new@mail.ru', '5F4DCC3B5AA765D61D8327DEB882CF99', 0, 'new', NOW());
+values (21, 'mail@mail.ru', '5F4DCC3B5AA765D61D8327DEB882CF99', true, 'mail', NOW()),
+(22, 'new@mail.ru', '5F4DCC3B5AA765D61D8327DEB882CF99', false, 'new', NOW());
 
 INSERT INTO users(id, code, email, password, is_moderator, name, reg_time)
-values (23, 'restorecode', 'restoreuser@mail.ru', 'restoreuserpassword', 1, 'restoreuser', NOW());
+values (23, 'restorecode', 'restoreuser@mail.ru', 'restoreuserpassword', true, 'restoreuser', NOW());
 
 insert into posts(id, is_active, moderation_status, text, time, title, view_count, user_id, moderator_id) values
 (10, 1, 'ACCEPTED', 'Огромное количество текста Поиск1. Прямо здесь. Основное тело текста', '2020-04-15 21:48:25.0', 'Заголовок поста 1', 2, 21, 21),

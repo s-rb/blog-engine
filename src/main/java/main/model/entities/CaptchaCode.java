@@ -15,10 +15,10 @@ public class CaptchaCode implements Serializable {
     @Column(nullable = false, columnDefinition = "DATETIME")
     private LocalDateTime time;
 
-    @Column(nullable = false, columnDefinition = "TINYTEXT")
+    @Column(nullable = false, columnDefinition = "VARCHAR(255)")
     private String code;
 
-    @Column(name = "secret_code", nullable = false, columnDefinition = "TINYTEXT")
+    @Column(name = "secret_code", nullable = false, columnDefinition = "VARCHAR(255)")
     private String secretCode;
 
     public CaptchaCode(LocalDateTime time, String code, String secretCode) {
