@@ -20,7 +20,7 @@ services:
       - /var/www/html:/var/www/html
       - /etc/letsencrypt:/etc/letsencrypt
       - /var/lib/letsencrypt:/var/lib/letsencrypt
-    command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email --staging -d blog.surkoff.com -d www.blog.surkoff.com -d keycloak.surkoff.com -d www.keycloak.surkoff.com
+    command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email -d blog.surkoff.com -d www.blog.surkoff.com
     networks:
       - blog-net
 
