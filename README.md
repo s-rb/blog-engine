@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/-Java-05122A?style=flat&logo=Java&logoColor=FFA518) ![WebService](https://img.shields.io/badge/-WebService-05122A?style=flat) ![Spring](https://img.shields.io/badge/-Spring-05122A?style=flat&logo=Spring&logoColor=71b23c) ![Springboot](https://img.shields.io/badge/-SpringBoot-05122A?style=flat&logo=Springboot&logoColor=71b23c) ![JUnit4](https://img.shields.io/badge/-JUnit4-05122A?style=flat) ![Maven](https://img.shields.io/badge/-Maven-05122A?style=flat&logo=apachemaven&logoColor=fffffb) ![Postgresql](https://img.shields.io/badge/-Postgres-05122A?style=flat&logo=postgresql&logoColor=fffffb) ![Captcha](https://img.shields.io/badge/-Captcha-05122A?style=flat) ![Mail](https://img.shields.io/badge/-Spring_Mail-05122A?style=flat&logo=springboot) ![Lombok](https://img.shields.io/badge/-Lombok-05122A?style=flat&logo=lombok) ![JSoup](https://img.shields.io/badge/-JSoup-05122A?style=flat&logo=jsoup) ![Thymeleaf](https://img.shields.io/badge/-Thymeleaf-05122A?style=flat&logo=Thymeleaf) ![REST](https://img.shields.io/badge/-REST-05122A?style=flat)
 
-[Try it here, click me!](http://blog.surkoff.com)
+[Try it here, click me!](http://blog.surkoff.su)
 
 Java-based Spring Boot backend for a blog.
 

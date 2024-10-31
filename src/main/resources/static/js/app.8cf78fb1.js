@@ -368,7 +368,7 @@
                     attrs: {to: "/stat"}
                 }, [e._v(" Статистика ")])], 1), r("div", {staticClass: "Footer-Info"}, [r("div", {staticClass: "Footer-Item"}, [r("a", {
                     staticClass: "Link",
-                    attrs: {href: "https://surkoff.com"}
+                    attrs: {href: "https://surkoff.su"}
                 }, [e._v(e._s(e.phone))])]), r("div", {staticClass: "Footer-Item"}, [r("a", {
                     staticClass: "Link",
                     attrs: {href: "mailto:" + e.email}
