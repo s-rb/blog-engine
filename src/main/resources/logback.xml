@@ -5,9 +5,9 @@
     <appender name="INFO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${HOME-DIR}/archived/app.%d{yyyy-MM-dd}.%i.info.log.gz</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <totalSizeCap>100MB</totalSizeCap>
-            <maxHistory>60</maxHistory>
+            <maxFileSize>5MB</maxFileSize>
+            <totalSizeCap>50MB</totalSizeCap>
+            <maxHistory>45</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>
@@ -20,9 +20,9 @@
     <appender name="EXCEPTION-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${HOME-DIR}/archived/app.%d{yyyy-MM-dd}.%i.exceptions.log.gz</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <totalSizeCap>150MB</totalSizeCap>
-            <maxHistory>60</maxHistory>
+            <maxFileSize>5MB</maxFileSize>
+            <totalSizeCap>60MB</totalSizeCap>
+            <maxHistory>45</maxHistory>
         </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{35} - %msg%n</pattern>

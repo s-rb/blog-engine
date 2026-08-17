@@ -1,14 +1,47 @@
 version: "3.7"
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    env_file: ".env"
+    container_name: ${POSTGRES_HOST}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+    restart: unless-stopped
+    ports:
+      - "5434:5432"
+    networks:
+      - app-network  # Общая сеть с Traefik
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"  # Ротация при достижении 10 МБ
+        max-file: "5"    # Максимум 5 архивных файлов (общий лимит ~50 МБ)
+
   service:
     container_name: blog-app
+    depends_on:
+      postgres:
+        condition: service_healthy
     build: .
     restart: always
     ports:
       - "8082:8080"
     networks:
-      - blog-net
+      - app-network  # Общая сеть с Traefik
     volumes:
       - .m2:/root/.m2
       - blog_images:/images
@@ -27,7 +60,7 @@ services:
       - /var/lib/letsencrypt:/var/lib/letsencrypt
     command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email -d blog.surkoff.com -d www.blog.surkoff.com
     networks:
-      - blog-net
+      - app-network  # Общая сеть с Traefik
     logging:
       driver: "json-file"
       options:
@@ -35,8 +68,10 @@ services:
         max-file: "3"    # Максимум 5 архивных файлов (общий лимит ~15 МБ)
 
 networks:
-  blog-net:
+  app-network:
+    external: true
 
 volumes:
+  postgres_data:
   blog_images:
     driver: local
