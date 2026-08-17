@@ -13,7 +13,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Stage 2: Create a lightweight image to run the application
-FROM openjdk:11.0.11-jre-slim
+FROM eclipse-temurin:11-jre
 LABEL maintainer="Roman Surkov surkoff.com@gmail.com"
 
 # Устанавливаем шрифты (DejaVu — стандартный набор)
