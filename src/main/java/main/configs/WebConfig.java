@@ -13,9 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
             "http://blog.surkoff.com",
             "https://blog.surkoff.com",
             "http://surkoff.com",
-            "https://surkoff.com",
-            "http://ru.surkoff.com",
-            "https://ru.surkoff.com"
+            "https://surkoff.com"
     };
 
     @Override
