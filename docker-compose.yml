@@ -52,22 +52,6 @@ services:
         max-size: "10m"  # Ротация при достижении 10 МБ
         max-file: "5"    # Максимум 5 архивных файлов (общий лимит ~50 МБ)
 
-#  certbot:
-#    image: certbot/certbot
-#    container_name: blog-certbot
-#    volumes:
-#      - /var/www/html:/var/www/html
-#      - /etc/letsencrypt:/etc/letsencrypt
-#      - /var/lib/letsencrypt:/var/lib/letsencrypt
-#    command: certonly --webroot --webroot-path=/var/www/html --email surkov.r.b@gmail.com --agree-tos --no-eff-email -d blog.surkoff.com -d www.blog.surkoff.com
-#    networks:
-#      - app-network  # Общая сеть с Traefik
-#    logging:
-#      driver: "json-file"
-#      options:
-#        max-size: "5m"  # Ротация при достижении 5 МБ
-#        max-file: "3"    # Максимум 5 архивных файлов (общий лимит ~15 МБ)
-
 networks:
   app-network:
     external: true

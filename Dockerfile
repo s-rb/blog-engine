@@ -14,7 +14,7 @@ RUN mvn package -DskipTests
 
 # Stage 2: Create a lightweight image to run the application
 FROM openjdk:11.0.11-jre-slim
-LABEL maintainer="Roman Surkov surkov.r.b@gmail.com"
+LABEL maintainer="Roman Surkov surkoff.com@gmail.com"
 
 COPY --from=build /home/app/target/blog-engine-*.jar app.jar
 
