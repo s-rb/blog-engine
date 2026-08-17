@@ -16,6 +16,16 @@ RUN mvn package -DskipTests
 FROM openjdk:11.0.11-jre-slim
 LABEL maintainer="Roman Surkov surkoff.com@gmail.com"
 
+# Устанавливаем шрифты (DejaVu — стандартный набор)
+RUN apt-get update && apt-get install -y \
+    fontconfig \
+    ttf-dejavu \
+    ttf-dejavu-extra \
+    && rm -rf /var/lib/apt/lists/*
+
+# Включаем headless
+ENV JAVA_OPTS="-Djava.awt.headless=true"
+
 COPY --from=build /home/app/target/blog-engine-*.jar app.jar
 
 EXPOSE 8080
