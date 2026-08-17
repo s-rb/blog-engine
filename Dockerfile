@@ -16,11 +16,11 @@ RUN mvn package -DskipTests
 FROM eclipse-temurin:11-jre
 LABEL maintainer="Roman Surkov surkoff.com@gmail.com"
 
-# Устанавливаем шрифты (DejaVu — стандартный набор)
+# Устанавливаем шрифты (правильные имена для Ubuntu)
 RUN apt-get update && apt-get install -y \
     fontconfig \
-    ttf-dejavu \
-    ttf-dejavu-extra \
+    fonts-dejavu \
+    fonts-dejavu-extra \
     && rm -rf /var/lib/apt/lists/*
 
 # Включаем headless
