@@ -1,0 +1,12 @@
+INSERT INTO public.tag2post
+(id, post_id, tag_id)
+VALUES(9, 7, 8);
+INSERT INTO public.tag2post
+(id, post_id, tag_id)
+VALUES(11, 7, 10);
+INSERT INTO public.tag2post
+(id, post_id, tag_id)
+VALUES(13, 7, 12);
+INSERT INTO public.tag2post
+(id, post_id, tag_id)
+VALUES(22, 20, 10);
